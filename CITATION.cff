@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "Se usar o Habitar Commons, cite-o da seguinte forma."
 title: "Habitar Commons: classificação modular das formas de habitar"
-version: "1.3"
-date-released: 2026-11-08
+version: "1.3.1"
+date-released: 2026-11-10
 license: CC-BY-SA-4.0
 authors:
   - family-names: "Rocha Antunes"

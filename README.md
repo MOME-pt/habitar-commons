@@ -1,7 +1,9 @@
 # Habitar Commons
 
 **Classificação modular das formas de habitar, inspirada nos Creative Commons.**
-Versão 1.3 · novembro de 2026 · Jurisdição-alvo: Portugal
+Versão 1.3.1 · novembro de 2026 · Jurisdição-alvo: Portugal
+
+> **Estado.** Os modelos da família HC (COLETIVA) estão em revisão jurídica e devem ser lidos como rascunho, não como licenças-tipo. A v1.3.1 corrige o validador e a leitura do regime de transmissão do direito de habitação cooperativo (Decreto-Lei n.º 502/99, art. 22.º). Ver `CHANGELOG.md`.
 
 Os Creative Commons não mudaram o direito de autor: tornaram-no legível. O Habitar Commons faz o mesmo com a habitação. Decompõe qualquer arranjo habitacional num conjunto fechado de condições e responde, para qualquer casa, a seis perguntas:
 
@@ -16,16 +18,26 @@ Os Creative Commons não mudaram o direito de autor: tornaram-no legível. O Hab
 
 | Pasta | Conteúdo |
 | --- | --- |
-| `docs/` | Booklet v1.3 (PDF) e especificação completa (XLSX) |
-| `spec/` | Ruleset do validador de compatibilidade (`rules_v1_3.yaml`, 27 regras) |
-| `examples/` | Manifesto completo de exemplo (`HC-CR-MID_v1_3.yaml`) |
+| `docs/` | Booklet v1.3.1 (PDF) e especificação completa (XLSX) |
+| `spec/` | Ruleset (`rules_v1_3_1.yaml`, 29 regras) e esquema do manifesto (`manifest.schema.json`) |
+| `validator/` | Validador de referência em Python (`validate.py`) |
+| `tests/` | Manifesto de teste e 58 casos: cada regra tem um caso que deve disparar e outro que deve passar |
+| `examples/` | Manifesto-modelo `HC-CR-MID_v1_3_1.yaml`; versões anteriores em `archive/` |
+
+### Validar um manifesto
+
+```bash
+pip install pyyaml jsonschema
+python validator/validate.py examples/HC-CR-MID_v1_3_1.yaml
+python tests/run_tests.py
+```
 
 ## Como funciona
 
 - **Sete camadas:** metadados; direito e titularidade; economia; governação e garantias; forma de habitar; módulos e kits; estrutura da operação.
 - **Headline:** um código curto, `H-<BASE>-<ECON>-<TERM>`. Por exemplo, `H-MEMB-COST-LONG`: cooperativa de membros, preço ao custo, direito de longa duração.
-- **Manifesto:** a especificação completa em YAML ou JSON. É sempre a fonte de verdade.
-- **Validador:** regras declarativas (quando → então) com três níveis: `error`, `warning`, `info`.
+- **Manifesto:** a especificação completa em YAML ou JSON. Declara o arranjo; não o prova.
+- **Validador:** regras declarativas (quando → então) com três níveis: `error`, `warning`, `info`. Verifica a coerência interna do manifesto, não a conformidade jurídica nem a correspondência com estatutos e contratos.
 
 ## Catálogo v1.3: 18 tipos em 5 famílias
 

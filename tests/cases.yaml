@@ -1,0 +1,60 @@
+# Cada caso altera o manifesto base e indica se a regra deve disparar (fires) ou não (passes).
+# set: caminho com pontos -> novo valor; del: caminhos a remover.
+- {rule: AX002, expect: fires,  set: {axes.finance: [F-COLFIN, F-MTG], axes.resident_right: R-REAL-LIM:DUH}}
+- {rule: AX002, expect: passes, set: {axes.finance: [F-MTG], axes.resident_right: R-OWN, axes.right_condition: []}}
+- {rule: OV001, expect: fires,  set: {overlays: [O-COLIV], modules.use: [U-UP]}}
+- {rule: OV001, expect: passes, set: {overlays: [O-COLIV], modules.use: [U-UP, U-GUEST, U-ROOMS]}}
+- {rule: PT001, expect: fires,  set: {axes.finance: [F-COLFIN, F-MTG]}, note: "regressão D1: hipoteca numa lista"}
+- {rule: PT001, expect: passes}
+- {rule: PT002, expect: fires,  del: [parameters.transfer_regime]}
+- {rule: PT002, expect: passes}
+- {rule: LK001, expect: fires,  set: {axes.lock: L-0}}
+- {rule: LK001, expect: passes, set: {axes.lock: L-0, parameters.lock_rationale: "regime transitório"}}
+- {rule: LK002, expect: fires,  set: {axes.lock: L-TERM}}
+- {rule: LK002, expect: passes, set: {axes.lock: L-TERM, parameters.lock_years: 25}}
+- {rule: LK003, expect: fires,  set: {axes.lock: L-SURF}}
+- {rule: LK003, expect: passes, set: {axes.lock: L-SURF, axes.land_owner: A-PUB, axes.reversion: RV-PUB, parameters.surface_term: 70, phases: [{id: PH-OP}, {id: PH-END, event: termo da superfície}]}}
+- {rule: LD001, expect: fires,  set: {axes.land_owner: A-PUB}}
+- {rule: LD001, expect: passes, set: {axes.land_owner: A-PUB, axes.reversion: RV-PUB, parameters.surface_term: 70, phases: [{id: PH-OP}, {id: PH-END, event: termo da superfície}]}}
+- {rule: LD002, expect: fires,  set: {axes.reversion: RV-PRIV, phases: [{id: PH-OP}, {id: PH-END, event: reversão}]}}
+- {rule: LD002, expect: passes, set: {axes.reversion: RV-PRIV, parameters.post_reversion_protection: "cláusula de preço", phases: [{id: PH-OP}, {id: PH-END, event: reversão}]}}
+- {rule: NM001, expect: fires,  set: {modules.intermediation: [N-ML]}}
+- {rule: NM001, expect: passes, set: {modules.intermediation: [N-ML], axes.governance: [G-MULTI]}}
+- {rule: PH001, expect: fires,  set: {phases: [{id: PH-DEV}, {id: PH-OP}]}}
+- {rule: PH001, expect: passes}
+- {rule: PH002, expect: fires,  set: {axes.reversion: RV-PUB}}
+- {rule: PH002, expect: passes, set: {axes.reversion: RV-PUB, phases: [{id: PH-OP}, {id: PH-END, event: reversão}]}}
+- {rule: FI001, expect: fires,  set: {axes.finance: [F-COLFIN, F-NIS]}}
+- {rule: FI001, expect: passes, set: {axes.finance: [F-COLFIN, F-NIS, F-IMPACT], parameters.nis: {coupon: 0.02}}}
+- {rule: OP001, expect: fires,  set: {parameters.fee_formula: {type: object, description: "a preencher"}}, note: "regressão D4: marcador vazio num projeto"}
+- {rule: OP001, expect: passes}
+- {rule: OP002, expect: fires,  set: {operation.developer: [D-FEE]}, del: [operation.works_owner]}
+- {rule: OP002, expect: passes, note: "regressão D1: D-COOP numa lista"}
+- {rule: AL001, expect: fires,  del: [operation.allocator]}
+- {rule: AL001, expect: passes}
+- {rule: PY001, expect: fires,  set: {axes.economics: [E-SUB]}}
+- {rule: PY001, expect: passes, set: {axes.economics: [E-SUB], axes.payer: [{code: PY-PUB-PROJ, share: 1.0}], parameters.public_commitment: "25 anos"}}
+- {rule: PY002, expect: fires,  set: {axes.payer: [{code: PY-RES, share: 0.6}, {code: PY-PUB-PERS, share: 0.4}]}}
+- {rule: PY002, expect: passes, set: {axes.payer: [{code: PY-RES, share: 0.6}, {code: PY-PUB-PERS, share: 0.4}], parameters.public_commitment: "contrato de 10 anos"}}
+- {rule: PY003, expect: fires,  set: {axes.payer: [{code: PY-RES, share: 0.6}]}}
+- {rule: PY003, expect: passes}
+- {rule: RX001, expect: fires,  set: {axes.revision: [RX-COST, RX-MKT]}}
+- {rule: RX001, expect: passes}
+- {rule: RX002, expect: fires,  set: {axes.revision: [RX-FIX]}}
+- {rule: RX002, expect: passes}
+- {rule: RX003, expect: fires,  set: {axes.revision: [RX-COST, RX-CPI]}}
+- {rule: RX003, expect: passes, set: {axes.revision: [RX-COST, RX-CPI], parameters.revision: {index_or_rate: IPC, period: anual}}}
+- {rule: RX004, expect: fires,  set: {axes.revision: [RX-COST, RX-CAPCPI], parameters.revision: {index_or_rate: IPC, period: anual}}}
+- {rule: RX004, expect: passes, set: {axes.revision: [RX-COST, RX-CAPCPI], parameters.revision: {index_or_rate: IPC, period: anual, cap: 0.02}}}
+- {rule: PO001, expect: fires,  set: {axes.population: [PO-YOUNG]}}
+- {rule: PO001, expect: passes, note: "regressão D1: [PO-GEN] não dispara"}
+- {rule: PO002, expect: fires,  set: {axes.population: [PO-SEN], parameters.population_legal_basis: "programa municipal"}}
+- {rule: PO002, expect: passes, set: {axes.population: [PO-SEN], parameters.population_legal_basis: "programa municipal", overlays: [O-UNIT, O-CARE]}, note: "regressão D1: O-CARE numa lista"}
+- {rule: CO001, expect: fires,  set: {overlays: [O-COHOUS]}}
+- {rule: CO001, expect: passes, set: {overlays: [O-COHOUS], operation.allocator: [ROLE-COOP, ROLE-COMM]}}
+- {rule: US001, expect: fires,  set: {axes.term: T-LIFE, phases: [{id: PH-OP}, {id: PH-END}]}, note: "D3: PH-END sem óbito"}
+- {rule: US001, expect: passes, set: {axes.term: T-LIFE, axes.resident_right: R-REAL-LIM:USUF, axes.right_condition: [], phases: [{id: PH-OP}, {id: PH-END, event: death}]}}
+- {rule: US002, expect: fires,  set: {axes.economics: [E-ENTRY]}}
+- {rule: US002, expect: passes, set: {axes.economics: [E-ENTRY], parameters.entry_method: "valor da caução", parameters.refund_rules: "redução anual"}}
+- {rule: CAT001, expect: fires,  set: {headline: H-LEASE-SUB-LONG}}
+- {rule: CAT001, expect: passes}
