@@ -4,6 +4,8 @@
 Versão 1.3.1 · novembro de 2026 · Jurisdição-alvo: Portugal
 
 > **Estado.** Os modelos da família HC (COLETIVA) estão em revisão jurídica e devem ser lidos como rascunho, não como licenças-tipo. A v1.3.1 corrige o validador e a leitura do regime de transmissão do direito de habitação cooperativo (Decreto-Lei n.º 502/99, art. 22.º). Ver `CHANGELOG.md`.
+>
+> **Versão candidata 2.0-rc1** (19 perfis, headline de cinco posições, validador com 46 regras): ver a [pre-release](https://github.com/MOME-pt/habitar-commons/releases/tag/v2.0-rc1) e o ramo [`v2.0-rc`](https://github.com/MOME-pt/habitar-commons/tree/v2.0-rc). A v1.3.1 continua a ser a versão estável.
 
 Os Creative Commons não mudaram o direito de autor: tornaram-no legível. O Habitar Commons faz o mesmo com a habitação. Decompõe qualquer arranjo habitacional num conjunto fechado de condições e responde, para qualquer casa, a seis perguntas:
 
