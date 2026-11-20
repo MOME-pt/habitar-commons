@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MOME-pt/habitar-commons/spec/manifest.schema.json",
+  "title": "Habitar Commons — manifesto v1.3.1",
+  "description": "Tipo e cardinalidade de cada campo do manifesto. Eixos escalares têm um único código; eixos multivalor são listas. Licença do standard: CC BY-SA 4.0.",
+  "type": "object",
+  "required": [
+    "spec",
+    "spec_version",
+    "kind",
+    "id",
+    "headline",
+    "axes"
+  ],
+  "$defs": {
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(-[A-Z0-9]+)*(:[A-Z]+)?$"
+    },
+    "codes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/code"
+      },
+      "uniqueItems": true
+    },
+    "code_or_codes": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/code"
+        },
+        {
+          "$ref": "#/$defs/codes"
+        }
+      ],
+      "description": "Lista de códigos. Um código isolado é aceite por compatibilidade com a v1.3 (aviso DEP003) até à v2.0."
+    }
+  },
+  "properties": {
+    "spec": {
+      "const": "mome.habitar.commons"
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "template",
+        "project",
+        "classification",
+        "license"
+      ],
+      "description": "license é sinónimo obsoleto de template (aceite com aviso até à v2.0)."
+    },
+    "id": {
+      "type": "string"
+    },
+    "family": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "under_review",
+        "validated"
+      ]
+    },
+    "jurisdiction": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "spec_license": {
+      "type": "string"
+    },
+    "license": {
+      "type": "string",
+      "description": "Sinónimo obsoleto de spec_license (aceite com aviso até à v2.0)."
+    },
+    "headline": {
+      "type": "string",
+      "pattern": "^H(-[A-Z]+){3}$"
+    },
+    "axes": {
+      "type": "object",
+      "required": [
+        "asset_owner",
+        "resident_right",
+        "term",
+        "economics"
+      ],
+      "properties": {
+        "asset_owner": {
+          "$ref": "#/$defs/code"
+        },
+        "land_owner": {
+          "$ref": "#/$defs/code"
+        },
+        "reversion": {
+          "$ref": "#/$defs/code"
+        },
+        "resident_right": {
+          "$ref": "#/$defs/code"
+        },
+        "right_condition": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "term": {
+          "$ref": "#/$defs/code"
+        },
+        "transfer": {
+          "$ref": "#/$defs/code"
+        },
+        "economics": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "value_capture": {
+          "$ref": "#/$defs/code"
+        },
+        "finance": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "governance": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "safeguards": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "targeting": {
+          "$ref": "#/$defs/code"
+        },
+        "lock": {
+          "$ref": "#/$defs/code"
+        },
+        "payer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "code",
+              "share"
+            ],
+            "properties": {
+              "code": {
+                "$ref": "#/$defs/code"
+              },
+              "share": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "revision": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "population": {
+          "$ref": "#/$defs/code_or_codes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "PH-DEV",
+              "PH-OP",
+              "PH-END"
+            ]
+          },
+          "transition_event": {},
+          "event": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "overlays": {
+      "$ref": "#/$defs/code_or_codes"
+    },
+    "modules": {
+      "type": "object",
+      "properties": {
+        "use": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "mobility": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "improvements": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "intermediation": {
+          "$ref": "#/$defs/code_or_codes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation": {
+      "type": "object",
+      "properties": {
+        "developer": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "allocator": {
+          "$ref": "#/$defs/code_or_codes"
+        },
+        "works_owner": {
+          "$ref": "#/$defs/code"
+        },
+        "revenue_recipient": {
+          "$ref": "#/$defs/code"
+        },
+        "vacancy_risk": {
+          "$ref": "#/$defs/code"
+        },
+        "default_risk": {
+          "$ref": "#/$defs/code"
+        },
+        "maint_current": {
+          "$ref": "#/$defs/code"
+        },
+        "maint_structural": {
+          "$ref": "#/$defs/code"
+        },
+        "developer_return": {
+          "$ref": "#/$defs/code"
+        },
+        "developer_exit": {
+          "$ref": "#/$defs/code"
+        },
+        "exit_timing": {}
+      }
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "catalog": {
+      "type": "object"
+    }
+  }
+}

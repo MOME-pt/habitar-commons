@@ -1,0 +1,153 @@
+# Caso de representação: o campo expect lista as regras (erro ou aviso) que devem disparar.
+spec: mome.habitar.commons
+spec_version: 2.0-rc1
+spec_license: CC-BY-SA-4.0
+kind: project
+status: test
+id: REP-03
+version: 2.0-rc1
+jurisdiction:
+- PT
+headline: H-GUARD-COST-LONG-PERP
+occupancy_title: OT-LEASE-PERM
+axes:
+  asset_owner:
+    nature: A-FUND
+    regime: AR-BOUND
+    purpose: PU-SOC
+  land_owner:
+    nature: A-FUND
+    regime: AR-BOUND
+    purpose: PU-SOC
+  reversion: RV-0
+  resident_right: R-LEASE
+  right_condition: []
+  term:
+    type: open
+    category: T-LONG
+  transfer:
+    code: TR-REG
+  economics:
+    base: E-COST
+  value_capture:
+    resident: V-0
+    entity: V-0
+  finance:
+  - F-COLFIN
+  governance:
+  - G-MULTI
+  safeguards:
+  - S-PROT-VULN
+  targeting: Q-MID
+  population:
+  - PO-GEN
+  lock:
+    code: L-PERP
+  revision:
+  - RX-COST
+flows:
+- id: renda
+  type: FL-OCC
+  payer:
+  - code: PY-RES
+    share: 1.0
+pricing:
+  energy:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  water:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  telecom:
+    inclusion: IN-RES
+    form: PF-FIX
+    contract_holder: resident
+functions:
+  sleep:
+    where: unit
+  hygiene:
+    where: unit
+  cook:
+    where: unit
+  living:
+    where: unit
+  laundry:
+    where: unit
+unit:
+  area_m2: 70
+  households: 1
+common_spaces: []
+building:
+  unit_constitution: fracao_autonoma
+  authorized_use: habitacao
+  typology: T2
+  accessibility:
+    regime: DL 163/2006
+    status: cumpre
+  energy_certificate: A
+overlays:
+  spatial:
+  - O-UNIT
+  relational: []
+  programmatic: []
+services: []
+modules:
+  use:
+  - U-UP
+  - U-SUB-T
+  mobility:
+  - M-MI
+  improvements:
+  - I-COMP-LIM
+  intermediation:
+  - N-0
+institutional:
+  participation_duty: estatutaria
+  resident_bodies:
+  - assembleia_geral
+  - direcao
+  - conselho_fiscal
+  admission:
+    allocator: ROLE-COOP
+    legal_basis: DL 502/99, arts. 8.º e 9.º
+phases:
+- id: PH-OP
+operation:
+  public:
+    owner_vehicle: x
+    developer_return: RT-0
+    developer_exit: X-0
+    holding_period: 5 anos
+    leverage: 60%
+    collateral_use: nenhum
+    developer:
+    - D-CORP
+    allocator:
+    - ROLE-OPR
+    continuity:
+      clause_ref: estatutos da fundação
+      amendment_majority: unanimidade
+  private:
+    works_owner: ROLE-OWN
+    vacancy_risk: ROLE-OWN
+parameters:
+  jurisdiction:
+    PT:
+      regimes: []
+evaluation:
+  poe:
+    level: indicativo
+    evaluator: ROLE-EVAL
+    last_date: '2026-10-01'
+    output: relatorio_de_divergencias
+  data_rules:
+    consent: required
+    publication: aggregated
+    individual_data_in_manifest: false
+seal:
+  commons: false
+  candidate: true
+history: []
+expect: []

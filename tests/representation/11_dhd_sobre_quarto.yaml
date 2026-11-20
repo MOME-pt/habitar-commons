@@ -1,0 +1,168 @@
+# Caso de representação: o campo expect lista as regras (erro ou aviso) que devem disparar.
+spec: mome.habitar.commons
+spec_version: 2.0-rc1
+spec_license: CC-BY-SA-4.0
+kind: project
+status: test
+id: REP-11
+version: 2.0-rc1
+jurisdiction:
+- PT
+headline: H-REAL-ENTRY-LIFE-PERP
+occupancy_title: OT-RIGHT
+axes:
+  asset_owner:
+    nature: A-ASSOC
+    regime: AR-FULL
+    purpose: PU-SOC
+  land_owner:
+    nature: A-ASSOC
+    regime: AR-FULL
+    purpose: PU-SOC
+  reversion: RV-0
+  resident_right: R-REAL-LIM:DHD
+  right_condition: []
+  term:
+    type: life
+    category: T-LIFE
+  transfer:
+    code: TR-0
+  economics:
+    base: E-COST
+    entry: E-ENTRY
+  value_capture:
+    resident: V-0
+    entity: V-0
+  finance:
+  - F-OPFIN
+  - F-MTG
+  governance:
+  - G-MULTI
+  safeguards:
+  - S-PROT-VULN
+  targeting: Q-OPEN
+  population:
+  - PO-SEN
+  lock:
+    code: L-PERP
+  revision:
+  - RX-COST
+flows:
+- id: caucao
+  type: FL-ACCESS
+  payer:
+  - code: PY-RES
+    share: 1.0
+- id: prestacao
+  type: FL-OCC
+  payer:
+  - code: PY-RES
+    share: 1.0
+pricing:
+  energy:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  water:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  telecom:
+    inclusion: IN-RES
+    form: PF-FIX
+    contract_holder: resident
+functions:
+  sleep:
+    where: unit
+  hygiene:
+    where: unit
+  cook:
+    where: unit
+  living:
+    where: unit
+  laundry:
+    where: unit
+unit:
+  area_m2: 70
+  households: 1
+common_spaces: []
+building:
+  unit_constitution: quarto_sem_autonomia
+  authorized_use: habitacao
+  typology: T2
+  accessibility:
+    regime: DL 163/2006
+    status: cumpre
+  energy_certificate: A
+overlays:
+  spatial:
+  - O-UNIT
+  relational: []
+  programmatic: []
+services: []
+modules:
+  use:
+  - U-UP
+  - U-SUB-T
+  mobility:
+  - M-MI
+  improvements:
+  - I-COMP-LIM
+  intermediation:
+  - N-0
+institutional:
+  participation_duty: estatutaria
+  resident_bodies:
+  - assembleia_geral
+  - direcao
+  - conselho_fiscal
+  admission:
+    allocator: ROLE-COOP
+    legal_basis: DL 502/99, arts. 8.º e 9.º
+phases:
+- id: PH-OP
+- id: PH-END
+  transition_event: obito
+operation:
+  public:
+    owner_vehicle: x
+    developer_return: RT-0
+    developer_exit: X-0
+    holding_period: 5 anos
+    leverage: 60%
+    collateral_use: nenhum
+    developer:
+    - D-CORP
+    allocator:
+    - ROLE-OPR
+    continuity:
+      clause_ref: estatutos
+      amendment_majority: dois terços
+  private:
+    works_owner: ROLE-OWN
+    vacancy_risk: ROLE-OWN
+parameters:
+  jurisdiction:
+    PT:
+      regimes: []
+  mortgage_purpose: caucao
+  entry_method: caução de 10 a 20% (DL 1/2020)
+  refund_rules: reembolso decrescente (DL 1/2020)
+  population_legal_basis: regulamento da associação
+  care_pathway: protocolo de cuidados
+evaluation:
+  poe:
+    level: indicativo
+    evaluator: ROLE-EVAL
+    last_date: '2026-10-01'
+    output: relatorio_de_divergencias
+  data_rules:
+    consent: required
+    publication: aggregated
+    individual_data_in_manifest: false
+seal:
+  commons: false
+  candidate: true
+history: []
+expect:
+- DH001

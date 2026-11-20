@@ -1,40 +1,236 @@
-# Manifesto de projeto fictício, completo, que deve passar sem erros nem avisos.
+# Manifesto de projeto fictício, completo, que deve passar sem erros nem avisos (v2.0-rc1).
 spec: mome.habitar.commons
-spec_version: "1.3.1"
-kind: project
-id: TEST-BASE
-headline: H-MEMB-COST-LONG
-jurisdiction: [PT]
+spec_version: 2.0-rc1
 spec_license: CC-BY-SA-4.0
+kind: project
+status: test
+id: TEST-BASE
+version: 2.0-rc1
+jurisdiction:
+- PT
+headline: H-MEMB-COST-MBR-PERP
+occupancy_title: OT-RIGHT
 axes:
-  asset_owner: A-COOP
-  land_owner: A-COOP
+  asset_owner:
+    nature: A-COOP
+    regime: AR-FULL
+    purpose: PU-COOP
+  land_owner:
+    nature: A-COOP
+    regime: AR-FULL
+    purpose: PU-COOP
   reversion: RV-0
   resident_right: R-REAL-LIM:DUH
-  right_condition: [MEMB]
-  term: T-LONG
-  transfer: TR-INT
-  economics: [E-COST, E-CAP]
-  value_capture: V-0
-  finance: [F-COLFIN]
-  governance: [G-1P1V]
-  safeguards: [S-ESC]
+  right_condition:
+  - MEMB
+  term:
+    type: membership
+    category: T-MBR
+    duration: null
+    termination:
+      events:
+      - demissao
+      - exclusao
+      - morte_sem_sucessor_admitido
+      legal_basis: DL 502/99, arts. 22.º, n.º 2, 23.º e 24.º
+  transfer:
+    code: TR-APP
+    inter_vivos:
+      requires:
+      - admissao_como_cooperador
+      - acordo_da_assembleia_geral
+      legal_basis: DL 502/99, art. 22.º, n.º 1
+    mortis_causa:
+      requires:
+      - inscricao_do_sucessor
+      legal_basis: DL 502/99, art. 22.º, n.º 2
+  economics:
+    base: E-COST
+    cap: E-CAP
+  value_capture:
+    resident: V-0
+    entity: V-0
+  finance:
+  - F-COLFIN
+  governance:
+  - G-1P1V
+  safeguards:
+  - S-PROT-VULN
   targeting: Q-MID
-  lock: L-PERP
-  payer: [{code: PY-RES, share: 1.0}]
-  revision: [RX-COST]
-  population: [PO-GEN]
+  population:
+  - PO-GEN
+  lock:
+    code: L-PERP
+    type: open
+    basis: estatutos
+  revision:
+  - RX-COST
+  - RX-FIN
+flows:
+- id: titulos
+  type: FL-CAP
+  description: Títulos de participação no valor do custo do fogo (art. 20.º, n.º 1)
+  payer:
+  - code: PY-RES
+    share: 1.0
+  recipient: ROLE-COOP
+  refund:
+    when:
+    - demissao
+    - exclusao
+    value: valor_nominal_com_juros
+    timing: um ano
+    legal_basis: DL 502/99, art. 24.º
+- id: preco_do_direito
+  type: FL-OCC
+  description: Quota-parte dos encargos financeiros e de administração (art. 19.º, n.os 2 a 4)
+  payer:
+  - code: PY-RES
+    share: 1.0
+  recipient: ROLE-COOP
+- id: fundo_de_conservacao
+  type: FL-OCC
+  description: Contribuições para o fundo de conservação e reparação (art. 12.º)
+  payer:
+  - code: PY-RES
+    share: 1.0
+  recipient: ROLE-COOP
+pricing:
+  energy:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  water:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  telecom:
+    inclusion: IN-RES
+    form: PF-FIX
+    contract_holder: resident
+functions:
+  sleep:
+    where: unit
+  hygiene:
+    where: unit
+  cook:
+    where: unit
+  living:
+    where: unit
+  laundry:
+    where: unit
+unit:
+  area_m2: 70
+  households: 1
+common_spaces: []
+building:
+  unit_constitution: fracao_autonoma
+  authorized_use: habitacao
+  typology: T2
+  accessibility:
+    regime: DL 163/2006
+    status: cumpre
+  energy_certificate: A
+overlays:
+  spatial:
+  - O-UNIT
+  relational: []
+  programmatic: []
+services: []
+modules:
+  use:
+  - U-UP
+  - U-SUB-T
+  mobility:
+  - M-MI
+  improvements:
+  - I-COMP-LIM
+  intermediation:
+  - N-0
+institutional:
+  participation_duty: estatutaria
+  resident_bodies:
+  - assembleia_geral
+  - direcao
+  - conselho_fiscal
+  admission:
+    allocator: ROLE-COOP
+    legal_basis: DL 502/99, arts. 8.º e 9.º
 phases:
-  - {id: PH-DEV, transition_event: escritura de atribuição}
-  - {id: PH-OP}
-overlays: [O-UNIT]
-modules: {use: [U-UP], mobility: [M-MI], improvements: [I-COMP-LIM], intermediation: [N-0]}
+- id: PH-DEV
+  transition_event: atribuicao_do_direito_por_escritura
+  construction:
+    works_owner: ROLE-COOP
+    builder: ROLE-BLD
+    modality: empreitada
+    defects_warranty: cinco anos
+- id: PH-OP
 operation:
-  developer: [D-COOP, D-FEE]
-  works_owner: ROLE-COOP
-  allocator: [ROLE-COOP]
-  vacancy_risk: ROLE-COOP
-  developer_return: RT-FEE
+  public:
+    developer:
+    - D-COOP
+    - D-FEE
+    owner_vehicle: cooperativa
+    developer_return: RT-FEE
+    developer_exit: X-FEE
+    holding_period: indeterminado
+    leverage: 60% do custo
+    collateral_use: nenhum
+    allocator:
+    - ROLE-COOP
+    continuity:
+      clause_ref: estatutos, art. 30.º
+      amendment_majority: três quartos
+    replacement_reserve:
+      holder: ROLE-COOP
+      rule: fundo_de_conservacao
+      legal_basis: DL 502/99, art. 12.º
+  private:
+    works_owner: ROLE-COOP
+    vacancy_risk: ROLE-COOP
+    default_risk: ROLE-COOP
 parameters:
-  transfer_regime: {legal_basis: "DL 502/99, art. 22.º", mechanism: "devolução e nova atribuição", statutes_ref: "art. 15.º dos estatutos"}
-  fee_formula: {formula: "4% do custo de construção", disclosure: "relatório anual à assembleia geral"}
+  transfer_mechanism:
+    value: alienacao_art22
+    legal_basis: DL 502/99, art. 22.º
+  statutes_ref: estatutos, art. 15.º
+  second_generation_access:
+    value: custo de reposição corrigido
+    legal_basis: DL 502/99, art. 20.º, n.º 2
+  refund_timing:
+    value: um ano
+    note: art. 89.º CCoop
+  sanctions_procedure:
+    legal_basis: Lei n.º 119/2015, arts. 25.º e 26.º
+    exclusion_before_restitution: true
+  fee_formula:
+    value: 4% do custo de construção
+    disclosure: relatório anual à assembleia geral
+  jurisdiction:
+    PT:
+      regimes:
+      - pt.coop_dh
+      - pt.coop_fundos
+      - pt.ccoop_disciplina
+      - pt.ccoop_reembolso
+      - pt.ccoop_reservas
+evaluation:
+  poe:
+    level: indicativo
+    evaluator: ROLE-EVAL
+    last_date: '2026-10-01'
+    output: relatorio_de_divergencias
+  data_rules:
+    consent: required
+    publication: aggregated
+    individual_data_in_manifest: false
+seal:
+  commons: false
+  candidate: true
+history:
+- version: 2.0-rc1
+  lock: L-PERP
+  value_capture: V-0
+  safeguards:
+  - S-PROT-VULN
+  reason: Modelo reescrito segundo o regime do DL 502/99 (decisões 29 e 30, sujeitas a parecer)

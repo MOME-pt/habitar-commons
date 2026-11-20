@@ -1,0 +1,71 @@
+# Manifesto-modelo da família HC (COLETIVA) — cooperativa custo-base, longa duração.
+# ESTADO: rascunho em revisão jurídica. Não usar como licença nem como prova de conformidade.
+spec: mome.habitar.commons
+spec_version: "1.3.1"
+kind: template                      # antes: license (sinónimo obsoleto, aceite até à v2.0)
+id: HC-CR-MID
+family: HC
+version: "1.3.1"
+status: under_review
+jurisdiction: [PT]
+spec_license: CC-BY-SA-4.0          # licença do standard; não se aplica à habitação
+headline: H-MEMB-COST-LONG          # atribuído ao perfil; derivação formal a partir dos eixos na v2.0
+
+axes:
+  asset_owner: A-COOP               # titular do edifício
+  land_owner: A-COOP                # A-PUB ou A-TRUST se em superfície
+  reversion: RV-0                   # RV-PUB ou RV-PRIV se em superfície
+  resident_right: R-REAL-LIM:DUH    # direito de habitação cooperativo (DL 502/99, arts. 18.º-24.º)
+  right_condition: [MEMB]
+  term: T-LONG
+  transfer: TR-INT
+  economics: [E-COST, E-CAP]
+  value_capture: V-0
+  finance: [F-COLFIN]               # opcional: F-IMPACT, F-NIS (nunca F-MTG: PT001)
+  governance: [G-1P1V]
+  safeguards: [S-ESC, S-VULN]
+  targeting: Q-MID
+  lock: L-PERP                      # L-SURF se land_owner for diferente de asset_owner
+  payer: [{code: PY-RES, share: 1.0}]
+  revision: [RX-COST]
+  population: [PO-GEN]
+
+phases:
+  - id: PH-DEV
+    transition_event: atribuição dos direitos de habitação após licença de utilização
+  - id: PH-OP
+
+overlays: [O-UNIT, O-SERV-0]
+
+modules:
+  use: [U-UP, U-AL0, U-SUB-T]
+  mobility: [M-MI]
+  improvements: [I-COMP-LIM]
+  intermediation: [N-0]
+
+operation:                          # Camada 6 (fora do cartão público)
+  developer: [D-COOP, D-FEE]
+  works_owner: ROLE-COOP
+  revenue_recipient: ROLE-COOP
+  allocator: [ROLE-COOP]            # admissão de cooperadores e atribuição dos direitos
+  vacancy_risk: ROLE-COOP
+  default_risk: ROLE-COOP
+  maint_current: ROLE-COOP
+  maint_structural: ROLE-COOP
+  developer_return: RT-FEE
+  developer_exit: X-FEE
+  exit_timing: {type: milestone, description: "Entrega da obra e liquidação dos honorários."}
+
+parameters:
+  transfer_regime:
+    legal_basis: "DL 502/99, art. 22.º (alienação entre vivos com acordo da assembleia geral; transmissão por morte)"
+    mechanism: {type: string, description: "Mecanismo de transmissão e de saída previsto nos estatutos de cada projeto."}
+    statutes_ref: {type: string, description: "Artigo dos estatutos que regula a transmissão, a saída e o valor de entrada do cooperador seguinte (DL 502/99, art. 20.º, n.º 2)."}
+  sanctions_ladder: {type: object, description: "Escada sancionatória."}
+  fee_formula:
+    formula: {type: string, description: "Fórmula do fee de promoção e gestão."}
+    disclosure: {type: string, description: "Como e quando o fee é divulgado aos cooperadores."}
+  surface_term: {type: integer, unit: anos, required_if: "land_owner != asset_owner"}
+  jurisdiction:
+    PT:
+      regimes: [pt.coop_isencoes, pt.duh]

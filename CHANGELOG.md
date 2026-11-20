@@ -1,5 +1,34 @@
 # Registo de alterações
 
+## 2.0-rc1 — 20 nov 2026 (versão candidata, major)
+Parte da v1.3.1. Reúne as propostas dos documentos de revisão 1 e 2, adotadas pelos autores (decisões 29 a 64 da especificação). O regime cooperativo (decisões 29 e 30) fica sujeito a parecer jurídico; a v2.0 final publica-se depois.
+
+**Alterações que quebram a compatibilidade**
+- **19 perfis.** A variante B do P17 passa a perfil próprio: P18, Venda da nua propriedade com reserva de usufruto (`senior-bare-ownership`, `H-REAL-RELEASE-LIFE-0`), com o código novo E-RELEASE. A entidade guardiã passa a P19.
+- **Identificadores imutáveis** por perfil (`own-market`, `coop-cost`…); o número P é só ordem de apresentação.
+- **Headline com cinco posições:** `H-<BASE>-<ECON>-<TERM>-<LOCK>`, derivado dos eixos (HL001). Headlines de três posições são aceites com aviso (DEP008).
+- **Duração medida** (`term`: tipo, categoria, duração, termo) e categoria nova T-MBR (enquanto membro).
+- **Titularidade em três variáveis:** natureza (`A-*`, com A-FUND e A-ASSOC novos), regime patrimonial (`AR-*`) e finalidade (`PU-*`). A-TRUST aceite com aviso (DEP004) até à v3.0; BASE TRUST passa a GUARD.
+- **Eixos multivalor com papéis** (`economics: {{base, cap, income, sub, entry}}`).
+- **Âmbito habitacional:** `occupancy_title` obrigatório; alojamento local, turismo e timeshare fora (SC001).
+- **Modos de habitar:** matriz funcional e inventário de espaços comuns; descritores espaciais derivados (MX001); overlays por família; serviços SV-*. O-SERV-* aceites com aviso (DEP006).
+- **Fluxos:** o eixo `payer` passa a atributo de cada fluxo (`flows`); aceite com aviso (DEP007).
+- **Modelos, não licenças:** a família HC designa-se por modelos até haver cláusulas validadas e kit documental.
+- **Selo Habitar Commons** reservado a arranjos desmercantilizados (SE001), distinto de "classificado segundo o Habitar Commons".
+
+**Acréscimos**
+- Regime cooperativo do DL 502/99 (`pt.coop_dh`): alienação entre vivos com acordo da assembleia geral e transmissão por morte (art. 22.º); títulos de participação, preço do direito e reembolso (FX001, FX002). Sujeito a parecer jurídico.
+- DHD (`R-REAL-LIM:DHD`, DH001), habitação de função (EMP, EM001), cedência gratuita (E-FREE), RX-FIN.
+- Estado de ocupação do imóvel e fase de mobilização PH-PRE (ST001).
+- Marcadores de financiarização no cartão público (FN001); continuidade da vinculação (CT001); procedimento sancionatório com fonte legal (SN001); S-PROT-VULN substitui S-VULN e S-ESC.
+- Componentes do preço e titularidade dos contratos (TS001); bloco físico e dados da construção; dispositivos institucionais; avaliação pós-ocupação; histórico do manifesto (HX001).
+- Camada 6 dividida em `operation.public` e `operation.private`; as regras sobre campos privados não se verificam em manifestos com `visibility: public`.
+
+**Validador**
+- 46 regras (29 na v1.3.1), 92 casos de teste e 12 casos de representação. RX004 da v1.3.1 integrada em RX003.
+- Operadores novos: startswith, contains_other_than, each_sum_eq e os especiais headline_derived, spatial_derived, history_monotonic e no_placeholders. `has_value` deixa de aceitar objetos só com nulos.
+- Função de derivação do headline publicada no ruleset (decisão 64): P05 declara `economics: {{base: E-HYB, cap: E-CAP}}`; o P10 deixa de admitir património vinculado (AR-BOUND), que é P19.
+
 ## 1.3.1 — 10 nov 2026 (patch, retrocompatível)
 Correções a partir de uma revisão crítica externa e de pesquisa jurídica preliminar.
 - **Validador.** Operadores separados por tipo (escalares: eq, ne, in, not_in; listas: contains, contains_any, contains_all, contains_none, subset_of). Corrige quatro regras que davam resultados errados: PT001 aceitava hipoteca numa lista de financiamentos; PO001, PO002 e OP002 disparavam em casos válidos, incluindo o próprio exemplo HC-CR-MID.

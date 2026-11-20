@@ -1,257 +1,825 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/MOME-pt/habitar-commons/spec/manifest.schema.json",
-  "title": "Habitar Commons — manifesto v1.3.1",
-  "description": "Tipo e cardinalidade de cada campo do manifesto. Eixos escalares têm um único código; eixos multivalor são listas. Licença do standard: CC BY-SA 4.0.",
-  "type": "object",
-  "required": [
-    "spec",
-    "spec_version",
-    "kind",
-    "id",
-    "headline",
-    "axes"
-  ],
-  "$defs": {
-    "code": {
-      "type": "string",
-      "pattern": "^[A-Z][A-Z0-9]*(-[A-Z0-9]+)*(:[A-Z]+)?$"
-    },
-    "codes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/code"
-      },
-      "uniqueItems": true
-    },
-    "code_or_codes": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/code"
-        },
-        {
-          "$ref": "#/$defs/codes"
-        }
-      ],
-      "description": "Lista de códigos. Um código isolado é aceite por compatibilidade com a v1.3 (aviso DEP003) até à v2.0."
-    }
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/MOME-pt/habitar-commons/spec/manifest.schema.json",
+ "title": "Habitar Commons — manifesto (v2.0-rc1)",
+ "description": "Esquema do manifesto. CC BY-SA 4.0 · Francisco Rocha Antunes, Filipa Serôdio Pinheiro · MOME, Porto.",
+ "type": "object",
+ "required": [
+  "spec",
+  "spec_version",
+  "kind",
+  "id",
+  "headline",
+  "jurisdiction",
+  "occupancy_title",
+  "axes"
+ ],
+ "properties": {
+  "spec": {
+   "const": "mome.habitar.commons"
   },
-  "properties": {
-    "spec": {
-      "const": "mome.habitar.commons"
+  "spec_version": {
+   "type": "string",
+   "pattern": "^2\\.0"
+  },
+  "spec_license": {
+   "type": "string"
+  },
+  "kind": {
+   "enum": [
+    "template",
+    "project"
+   ]
+  },
+  "visibility": {
+   "enum": [
+    "public",
+    "private"
+   ]
+  },
+  "status": {
+   "type": "string"
+  },
+  "id": {
+   "type": "string"
+  },
+  "profile": {
+   "type": "string"
+  },
+  "family": {
+   "type": "string"
+  },
+  "version": {
+   "type": "string"
+  },
+  "jurisdiction": {
+   "type": "array",
+   "items": {
+    "type": "string",
+    "pattern": "^[A-Z]{2}$"
+   }
+  },
+  "headline": {
+   "type": "string",
+   "pattern": "^H-[A-Z]+-[A-Z]+-[A-Z]+(-[A-Z0-9]+)?$"
+  },
+  "occupancy_title": {
+   "enum": [
+    "OT-OWN",
+    "OT-LEASE-PERM",
+    "OT-LEASE-TERM",
+    "OT-RIGHT",
+    "OT-STUDENT",
+    "OT-EMERG",
+    "OT-AL",
+    "OT-TOUR",
+    "OT-TIMESHARE"
+   ]
+  },
+  "occupancy_status": {
+   "type": "object",
+   "required": [
+    "code"
+   ],
+   "properties": {
+    "code": {
+     "type": "string",
+     "pattern": "^OS-(OCC|VAC-T|DEVOL|NOTITLE|IMP(:[A-Z]+)?)$"
     },
-    "spec_version": {
-      "type": "string"
+    "source": {
+     "type": [
+      "string",
+      "null"
+     ]
     },
-    "kind": {
-      "enum": [
-        "template",
-        "project",
-        "classification",
-        "license"
-      ],
-      "description": "license é sinónimo obsoleto de template (aceite com aviso até à v2.0)."
-    },
-    "id": {
-      "type": "string"
-    },
-    "family": {
-      "type": "string"
-    },
-    "version": {
-      "type": "string"
-    },
-    "status": {
-      "enum": [
-        "draft",
-        "under_review",
-        "validated"
-      ]
-    },
-    "jurisdiction": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "spec_license": {
-      "type": "string"
-    },
-    "license": {
-      "type": "string",
-      "description": "Sinónimo obsoleto de spec_license (aceite com aviso até à v2.0)."
-    },
-    "headline": {
-      "type": "string",
-      "pattern": "^H(-[A-Z]+){3}$"
-    },
-    "axes": {
-      "type": "object",
-      "required": [
-        "asset_owner",
-        "resident_right",
-        "term",
-        "economics"
-      ],
-      "properties": {
-        "asset_owner": {
-          "$ref": "#/$defs/code"
-        },
-        "land_owner": {
-          "$ref": "#/$defs/code"
-        },
-        "reversion": {
-          "$ref": "#/$defs/code"
-        },
-        "resident_right": {
-          "$ref": "#/$defs/code"
-        },
-        "right_condition": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "term": {
-          "$ref": "#/$defs/code"
-        },
-        "transfer": {
-          "$ref": "#/$defs/code"
-        },
-        "economics": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "value_capture": {
-          "$ref": "#/$defs/code"
-        },
-        "finance": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "governance": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "safeguards": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "targeting": {
-          "$ref": "#/$defs/code"
-        },
-        "lock": {
-          "$ref": "#/$defs/code"
-        },
-        "payer": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "code",
-              "share"
-            ],
-            "properties": {
-              "code": {
-                "$ref": "#/$defs/code"
-              },
-              "share": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              }
-            }
-          }
-        },
-        "revision": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "population": {
-          "$ref": "#/$defs/code_or_codes"
-        }
-      },
-      "additionalProperties": false
-    },
-    "phases": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "id"
-        ],
-        "properties": {
-          "id": {
-            "enum": [
-              "PH-DEV",
-              "PH-OP",
-              "PH-END"
-            ]
-          },
-          "transition_event": {},
-          "event": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "overlays": {
-      "$ref": "#/$defs/code_or_codes"
-    },
-    "modules": {
-      "type": "object",
-      "properties": {
-        "use": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "mobility": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "improvements": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "intermediation": {
-          "$ref": "#/$defs/code_or_codes"
-        }
-      },
-      "additionalProperties": false
-    },
-    "operation": {
-      "type": "object",
-      "properties": {
-        "developer": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "allocator": {
-          "$ref": "#/$defs/code_or_codes"
-        },
-        "works_owner": {
-          "$ref": "#/$defs/code"
-        },
-        "revenue_recipient": {
-          "$ref": "#/$defs/code"
-        },
-        "vacancy_risk": {
-          "$ref": "#/$defs/code"
-        },
-        "default_risk": {
-          "$ref": "#/$defs/code"
-        },
-        "maint_current": {
-          "$ref": "#/$defs/code"
-        },
-        "maint_structural": {
-          "$ref": "#/$defs/code"
-        },
-        "developer_return": {
-          "$ref": "#/$defs/code"
-        },
-        "developer_exit": {
-          "$ref": "#/$defs/code"
-        },
-        "exit_timing": {}
-      }
-    },
-    "parameters": {
-      "type": "object"
-    },
-    "catalog": {
-      "type": "object"
+    "date": {
+     "type": [
+      "string",
+      "null"
+     ]
     }
+   }
+  },
+  "axes": {
+   "type": "object",
+   "required": [
+    "asset_owner",
+    "resident_right",
+    "term",
+    "economics",
+    "lock"
+   ],
+   "properties": {
+    "asset_owner": {
+     "type": "object",
+     "required": [
+      "nature"
+     ],
+     "properties": {
+      "nature": {
+       "enum": [
+        "A-IND",
+        "A-CORP",
+        "A-COOP",
+        "A-PUB",
+        "A-MIX",
+        "A-FUND",
+        "A-ASSOC",
+        "A-TRUST"
+       ]
+      },
+      "regime": {
+       "enum": [
+        "AR-FULL",
+        "AR-CO",
+        "AR-AFF",
+        "AR-BOUND"
+       ]
+      },
+      "purpose": {
+       "enum": [
+        "PU-OWN",
+        "PU-COM",
+        "PU-SOC",
+        "PU-COOP",
+        "PU-PHIL",
+        "PU-PUB",
+        "PU-HYB"
+       ]
+      }
+     },
+     "additionalProperties": false
+    },
+    "land_owner": {
+     "type": "object",
+     "required": [
+      "nature"
+     ],
+     "properties": {
+      "nature": {
+       "enum": [
+        "A-IND",
+        "A-CORP",
+        "A-COOP",
+        "A-PUB",
+        "A-MIX",
+        "A-FUND",
+        "A-ASSOC",
+        "A-TRUST"
+       ]
+      },
+      "regime": {
+       "enum": [
+        "AR-FULL",
+        "AR-CO",
+        "AR-AFF",
+        "AR-BOUND"
+       ]
+      },
+      "purpose": {
+       "enum": [
+        "PU-OWN",
+        "PU-COM",
+        "PU-SOC",
+        "PU-COOP",
+        "PU-PHIL",
+        "PU-PUB",
+        "PU-HYB"
+       ]
+      }
+     },
+     "additionalProperties": false
+    },
+    "reversion": {
+     "enum": [
+      "RV-0",
+      "RV-PUB",
+      "RV-PRIV"
+     ]
+    },
+    "resident_right": {
+     "type": "string",
+     "pattern": "^(R-OWN|R-LEASE|R-MEMB|R-LIC|R-TEMP|R-REAL-LIM(:(SURF|USUF|DUH|DHD|OUTRO))?)$"
+    },
+    "right_condition": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "MEMB",
+       "EMP"
+      ]
+     }
+    },
+    "term": {
+     "type": "object",
+     "required": [
+      "category"
+     ],
+     "properties": {
+      "type": {
+       "enum": [
+        "fixed",
+        "life",
+        "membership",
+        "open"
+       ]
+      },
+      "category": {
+       "enum": [
+        "T-PERM",
+        "T-LONG",
+        "T-MID",
+        "T-SHORT",
+        "T-LIFE",
+        "T-MBR",
+        "T-ONDEM"
+       ]
+      },
+      "duration": {
+       "type": [
+        "number",
+        "string",
+        "null"
+       ]
+      },
+      "renewal": {},
+      "termination": {}
+     }
+    },
+    "transfer": {
+     "type": "object",
+     "required": [
+      "code"
+     ],
+     "properties": {
+      "code": {
+       "enum": [
+        "TR-FREE",
+        "TR-REG",
+        "TR-APP",
+        "TR-INT",
+        "TR-0"
+       ]
+      }
+     }
+    },
+    "economics": {
+     "type": "object",
+     "required": [
+      "base"
+     ],
+     "properties": {
+      "base": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "cap": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "income": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "sub": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "entry": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "services": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      },
+      "release": {
+       "enum": [
+        "E-MKT",
+        "E-COST",
+        "E-CAP",
+        "E-INCOME",
+        "E-SUB",
+        "E-HYB",
+        "E-ENTRY",
+        "E-FREE",
+        "E-RELEASE"
+       ]
+      }
+     },
+     "additionalProperties": false
+    },
+    "value_capture": {
+     "type": "object",
+     "properties": {
+      "resident": {
+       "enum": [
+        "V-FREE",
+        "V-CAP",
+        "V-SHARED",
+        "V-0"
+       ]
+      },
+      "entity": {
+       "enum": [
+        "V-FREE",
+        "V-CAP",
+        "V-SHARED",
+        "V-0"
+       ]
+      }
+     }
+    },
+    "finance": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "F-MTG",
+       "F-OPFIN",
+       "F-COLFIN",
+       "F-PUB",
+       "F-IMPACT",
+       "F-NIS",
+       "F-NONE"
+      ]
+     }
+    },
+    "governance": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "G-IND",
+       "G-LANDLORD",
+       "G-CONDO",
+       "G-1P1V",
+       "G-MULTI",
+       "G-PUBADM"
+      ]
+     }
+    },
+    "safeguards": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "S-STD",
+       "S-PROT",
+       "S-PROT-VULN"
+      ]
+     }
+    },
+    "targeting": {
+     "enum": [
+      "Q-OPEN",
+      "Q-MID",
+      "Q-SOC"
+     ]
+    },
+    "population": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "PO-GEN",
+       "PO-SEN",
+       "PO-YOUNG",
+       "PO-STU",
+       "PO-FAM",
+       "PO-DIS",
+       "PO-WORK",
+       "PO-VULN",
+       "PO-AFF"
+      ]
+     }
+    },
+    "lock": {
+     "type": "object",
+     "required": [
+      "code"
+     ],
+     "properties": {
+      "code": {
+       "enum": [
+        "L-0",
+        "L-INIT",
+        "L-TERM",
+        "L-SURF",
+        "L-PERP"
+       ]
+      },
+      "type": {
+       "type": "string"
+      },
+      "duration": {
+       "type": [
+        "number",
+        "string",
+        "null"
+       ]
+      }
+     }
+    },
+    "revision": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "RX-FIX",
+       "RX-STEP",
+       "RX-CPI",
+       "RX-CAPCPI",
+       "RX-COST",
+       "RX-INC",
+       "RX-MKT",
+       "RX-FIN"
+      ]
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "flows": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "payer"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "type": {
+      "enum": [
+       "FL-ACCESS",
+       "FL-OCC",
+       "FL-SERV",
+       "FL-CAP",
+       "FL-SUB",
+       "FL-INV"
+      ]
+     },
+     "payer": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "code",
+        "share"
+       ],
+       "properties": {
+        "code": {
+         "enum": [
+          "PY-RES",
+          "PY-FAM",
+          "PY-PUB-PERS",
+          "PY-PUB-PROJ",
+          "PY-SOC",
+          "PY-EMP",
+          "PY-INS"
+         ]
+        },
+        "share": {
+         "type": "number",
+         "minimum": 0,
+         "maximum": 1
+        }
+       }
+      }
+     },
+     "recipient": {
+      "type": "string",
+      "pattern": "^ROLE-[A-Z]+$"
+     }
+    }
+   }
+  },
+  "pricing": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "properties": {
+     "inclusion": {
+      "enum": [
+       "IN-INC",
+       "IN-PASS",
+       "IN-RES"
+      ]
+     },
+     "form": {
+      "enum": [
+       "PF-FIX",
+       "PF-IDX",
+       "PF-USE",
+       "PF-FAIR"
+      ]
+     },
+     "contract_holder": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "functions": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "where"
+    ],
+    "properties": {
+     "where": {
+      "enum": [
+       "unit",
+       "common_optional",
+       "common_required",
+       "service"
+      ]
+     }
+    }
+   }
+  },
+  "unit": {
+   "type": "object",
+   "properties": {
+    "area_m2": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "households": {
+     "type": "integer",
+     "minimum": 1
+    }
+   }
+  },
+  "common_spaces": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "function"
+    ],
+    "properties": {
+     "function": {
+      "type": "string"
+     },
+     "access": {
+      "enum": [
+       "livre",
+       "reserva",
+       "horario"
+      ]
+     }
+    }
+   }
+  },
+  "building": {
+   "type": "object",
+   "properties": {
+    "unit_constitution": {
+     "enum": [
+      "predio_urbano",
+      "fracao_autonoma",
+      "quarto_sem_autonomia",
+      null
+     ]
+    },
+    "authorized_use": {
+     "enum": [
+      "habitacao",
+      "residencia_estudantes",
+      "apoio_social",
+      null
+     ]
+    }
+   }
+  },
+  "overlays": {
+   "type": "object",
+   "properties": {
+    "spatial": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "O-UNIT",
+       "O-UNIT-PART",
+       "O-SHARE",
+       "O-MICRO",
+       "O-COMMON"
+      ]
+     }
+    },
+    "relational": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "O-COLIV",
+       "O-COHOUS"
+      ]
+     }
+    },
+    "programmatic": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "O-LIVEWORK",
+       "O-PROD",
+       "O-EQUIP"
+      ]
+     }
+    },
+    "care": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "O-CARE"
+      ]
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "services": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "code"
+    ],
+    "properties": {
+     "code": {
+      "enum": [
+       "SV-DOM",
+       "SV-RES",
+       "SV-PERS",
+       "SV-CARE",
+       "SV-COMM"
+      ]
+     }
+    }
+   }
+  },
+  "modules": {
+   "type": "object",
+   "properties": {
+    "use": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "mobility": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "improvements": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "intermediation": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "institutional": {
+   "type": "object"
+  },
+  "phases": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id"
+    ],
+    "properties": {
+     "id": {
+      "enum": [
+       "PH-PRE",
+       "PH-DEV",
+       "PH-OP",
+       "PH-END"
+      ]
+     }
+    }
+   }
+  },
+  "operation": {
+   "type": "object",
+   "properties": {
+    "public": {
+     "type": "object",
+     "properties": {
+      "developer": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "allocator": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "pattern": "^ROLE-[A-Z]+$"
+       }
+      }
+     }
+    },
+    "private": {
+     "type": "object"
+    }
+   },
+   "additionalProperties": false
+  },
+  "parameters": {
+   "type": "object"
+  },
+  "evaluation": {
+   "type": "object"
+  },
+  "seal": {
+   "type": "object",
+   "properties": {
+    "commons": {
+     "type": "boolean"
+    },
+    "candidate": {
+     "type": "boolean"
+    }
+   }
+  },
+  "history": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "version"
+    ]
+   }
   }
+ }
 }

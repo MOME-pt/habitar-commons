@@ -1,0 +1,478 @@
+# Habitar Commons — ruleset do validador de compatibilidade
+# spec: mome.habitar.commons · versão 2.0-rc1 · 20 nov 2026
+# Autores: Francisco Rocha Antunes, Filipa Serôdio Pinheiro · MOME, Porto
+# Licença: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+# Documento técnico de referência, não jurídico. O validador verifica a coerência interna
+# do manifesto (níveis sintático e semântico); não verifica a conformidade jurídica nem o
+# funcionamento real (níveis jurídico-institucional e operacional, decisão 35).
+#
+# SEMÂNTICA
+#   Uma regra é violada quando `when` é verdadeiro e `then` é falso.
+#   Regras sem `then` são informativas: assinalam o caso quando `when` é verdadeiro.
+#   Um caminho inexistente torna falsa a condição em que aparece.
+#   scope: private — a regra usa campos privados da Camada 6; num manifesto com
+#   visibility: public não é verificada e o validador di-lo (decisão 61).
+#
+# OPERADORES (o tipo de cada campo está em manifest.schema.json)
+#   escalares: eq, ne, in, not_in, startswith
+#   listas:    contains, contains_any, contains_all, contains_none, subset_of, contains_other_than
+#              (aplicados a um objeto com papéis, como economics, usam os códigos de todos os papéis)
+#   qualquer:  exists, has_value (um objeto de esquema ou só com nulos não conta como valor)
+#   listas de objetos: each_sum_eq (para cada elemento, soma do subcampo `field`)
+#   especiais: always, headline_derived (HL001), spatial_derived (MX001),
+#              history_monotonic (HX001), no_placeholders (TP001)
+#
+# CAMINHOS
+#   a.b.c · phases[id=PH-DEV].transition_event · flows[*].payer[*].code · flows[type=FL-CAP].refund
+# REFERÊNCIAS
+#   value: {ref: axes.asset_owner} compara com o valor de outro campo do manifesto
+#
+# DERIVAÇÃO DO HEADLINE (decisões 37, 38 e 64): H-<BASE>-<ECON>-<TERM>-<LOCK>, eixos de PH-OP
+#   BASE, pela ordem: MEMB se right_condition contém MEMB ou o direito é R-MEMB; HYB se economics
+#        contém E-HYB; GUARD se o titular do edifício é A-FUND ou A-ASSOC com regime AR-BOUND e o
+#        direito não é R-OWN; COHO se overlays.relational contém O-COHOUS e o direito é R-OWN;
+#        senão pelo direito: R-OWN OWN, R-LEASE LEASE, R-LIC LIC, R-TEMP TEMP, R-REAL-LIM REAL.
+#   ECON, pela ordem: E-RELEASE, E-ENTRY, E-INCOME (papel income ou base), papel cap se a base é
+#        E-HYB, senão o papel base. O prefixo E- cai.
+#   TERM: term.category sem o prefixo T-.   LOCK: lock.code sem o prefixo L-.
+#
+# MANIFESTOS-MODELO
+#   Em manifestos com kind: template, as falhas de has_value em campos declarados são relatadas
+#   como "a preencher por projeto" (info) e não como violação.
+
+spec: mome.habitar.commons
+ruleset_version: "2.0-rc1"
+spec_license: CC-BY-SA-4.0
+
+catalog:
+  v2_0:
+    headlines:
+      - H-COHO-COST-PERM-INIT
+      - H-COHO-COST-PERM-TERM
+      - H-GUARD-COST-LONG-PERP
+      - H-GUARD-COST-LONG-SURF
+      - H-HYB-CAP-LONG-TERM
+      - H-LEASE-CAP-LONG-SURF
+      - H-LEASE-CAP-LONG-TERM
+      - H-LEASE-COST-LONG-PERP
+      - H-LEASE-COST-LONG-SURF
+      - H-LEASE-COST-LONG-TERM
+      - H-LEASE-INCOME-LONG-PERP
+      - H-LEASE-INCOME-LONG-TERM
+      - H-LEASE-MKT-LONG-0
+      - H-LEASE-MKT-MID-0
+      - H-LIC-MKT-SHORT-0
+      - H-MEMB-COST-MBR-PERP
+      - H-MEMB-COST-MBR-SURF
+      - H-MEMB-COST-MID-PERP
+      - H-MEMB-COST-MID-SURF
+      - H-MEMB-INCOME-MBR-PERP
+      - H-MEMB-INCOME-MBR-SURF
+      - H-OWN-CAP-PERM-PERP
+      - H-OWN-CAP-PERM-TERM
+      - H-OWN-COST-PERM-INIT
+      - H-OWN-MKT-PERM-0
+      - H-REAL-CAP-LONG-SURF
+      - H-REAL-ENTRY-LIFE-PERP
+      - H-REAL-ENTRY-LIFE-TERM
+      - H-REAL-RELEASE-LIFE-0
+      - H-TEMP-SUB-SHORT-TERM
+
+rules:
+
+  # ── Âmbito e headline ──────────────────────────────────────────────────────
+  - id: SC001
+    severity: error
+    message: "Título de ocupação obrigatório. Alojamento local, empreendimentos turísticos e habitação periódica estão fora do âmbito do standard (decisão 49)."
+    when: {op: always}
+    then:
+      all:
+        - {path: occupancy_title, op: has_value}
+        - {path: occupancy_title, op: not_in, value: [OT-AL, OT-TOUR, OT-TIMESHARE]}
+
+  - id: HL001
+    severity: error
+    message: "O headline tem de ser o derivado dos eixos de PH-OP: H-<BASE>-<ECON>-<TERM>-<LOCK> (decisões 37, 38 e 64)."
+    when: {op: always}
+    then: {op: headline_derived}
+
+  - id: CAT001
+    severity: info
+    message: "Combinação válida sem perfil próprio no catálogo; propor perfil se for replicável."
+    when: {path: headline, op: not_in, value: {ref: catalog.v2_0.headlines}}
+
+  # ── Titularidade, solo e direito ───────────────────────────────────────────
+  - id: AX002
+    severity: error
+    message: "F-MTG exige R-OWN, R-REAL-LIM:SURF ou R-REAL-LIM:USUF; com R-REAL-LIM:DHD só para garantir a caução (decisão 31)."
+    when: {path: axes.finance, op: contains, value: F-MTG}
+    then:
+      any:
+        - {path: axes.resident_right, op: in, value: [R-OWN, "R-REAL-LIM:SURF", "R-REAL-LIM:USUF"]}
+        - all:
+            - {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DHD"}
+            - {path: parameters.mortgage_purpose, op: eq, value: caucao}
+
+  - id: PT001
+    severity: error
+    jurisdiction: [PT]
+    message: "O direito de uso e habitação não pode ser hipotecado (CC, arts. 688.º e 1488.º), supletivo no regime cooperativo (DL 502/99, art. 19.º, n.º 1). Questão em aberto 1: sujeita a parecer jurídico."
+    when: {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DUH"}
+    then: {path: axes.finance, op: contains_none, value: [F-MTG]}
+
+  - id: PT002
+    severity: warning
+    jurisdiction: [PT]
+    message: "Direito de habitação cooperativo: declarar o mecanismo de transmissão. Com pt.coop_dh, o regime legal é a alienação entre vivos com admissão e acordo da assembleia geral e a transmissão por morte (DL 502/99, art. 22.º); restrições estatutárias exigem statutes_ref e estão sujeitas a parecer jurídico."
+    when: {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DUH"}
+    then:
+      all:
+        - {path: parameters.transfer_mechanism, op: has_value}
+        - any:
+            - {path: parameters.transfer_mechanism.value, op: eq, value: alienacao_art22}
+            - {path: parameters.statutes_ref, op: has_value}
+
+  - id: DH001
+    severity: error
+    message: "O DHD só se constitui sobre prédio urbano ou fração autónoma (DL 1/2020, art. 3.º, al. b)): não sobre um quarto."
+    when: {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DHD"}
+    then: {path: building.unit_constitution, op: in, value: [predio_urbano, fracao_autonoma]}
+
+  - id: EM001
+    severity: warning
+    message: "Habitação de função (EMP): declarar o prazo e as condições de saída quando cessa o vínculo laboral."
+    when: {path: axes.right_condition, op: contains, value: EMP}
+    then: {path: parameters.employment_exit, op: has_value}
+
+  - id: US001
+    severity: error
+    message: "Duração vitalícia exige usufruto, uso e habitação ou DHD, e uma fase PH-END com termo por óbito."
+    when: {path: axes.term.type, op: eq, value: life}
+    then:
+      all:
+        - {path: axes.resident_right, op: in, value: ["R-REAL-LIM:USUF", "R-REAL-LIM:DUH", "R-REAL-LIM:DHD"]}
+        - {path: "phases[id=PH-END].transition_event", op: eq, value: obito}
+
+  - id: US002
+    severity: warning
+    message: "Entrada inicial (E-ENTRY): declarar o método de cálculo e as regras de reembolso."
+    when: {path: axes.economics.entry, op: eq, value: E-ENTRY}
+    then:
+      all:
+        - {path: parameters.entry_method, op: has_value}
+        - {path: parameters.refund_rules, op: has_value}
+
+  # ── Vinculação, solo e fases ───────────────────────────────────────────────
+  - id: LK001
+    severity: warning
+    message: "Regime de custo ou de teto sem vinculação: justificar em parameters.lock_rationale."
+    when:
+      all:
+        - {path: axes.economics.base, op: in, value: [E-CAP, E-COST]}
+        - {path: axes.lock.code, op: eq, value: L-0}
+    then: {path: parameters.lock_rationale, op: has_value}
+
+  - id: LK002
+    severity: error
+    message: "L-TERM exige a duração da vinculação (lock.duration)."
+    when: {path: axes.lock.code, op: eq, value: L-TERM}
+    then: {path: axes.lock.duration, op: has_value}
+
+  - id: LK003
+    severity: error
+    message: "L-SURF exige solo noutro titular ou direito de superfície, e uma reversão declarada."
+    when: {path: axes.lock.code, op: eq, value: L-SURF}
+    then:
+      all:
+        - any:
+            - {path: axes.land_owner, op: ne, value: {ref: axes.asset_owner}}
+            - {path: axes.resident_right, op: eq, value: "R-REAL-LIM:SURF"}
+        - {path: axes.reversion, op: ne, value: RV-0}
+
+  - id: LD001
+    severity: error
+    message: "Solo e edifício em titulares diferentes: declarar a reversão e o prazo da superfície."
+    when: {path: axes.land_owner, op: ne, value: {ref: axes.asset_owner}}
+    then:
+      all:
+        - {path: axes.reversion, op: has_value}
+        - {path: parameters.surface_term, op: has_value}
+
+  - id: LD002
+    severity: warning
+    message: "Reversão para privado com vinculação longa: declarar a proteção dos residentes após a reversão."
+    when:
+      all:
+        - {path: axes.reversion, op: eq, value: RV-PRIV}
+        - {path: axes.lock.code, op: in, value: [L-SURF, L-PERP]}
+    then: {path: parameters.post_reversion_protection, op: has_value}
+
+  - id: PH001
+    severity: error
+    message: "A fase PH-DEV exige o evento de transição para a exploração."
+    when: {path: "phases[id=PH-DEV].id", op: exists}
+    then: {path: "phases[id=PH-DEV].transition_event", op: has_value}
+
+  - id: PH002
+    severity: error
+    message: "Uma reversão exige a fase PH-END."
+    when: {path: axes.reversion, op: in, value: [RV-PUB, RV-PRIV]}
+    then: {path: "phases[id=PH-END].id", op: exists}
+
+  - id: ST001
+    severity: info
+    message: "Imóvel devoluto ou com impedimento: declarar a fonte e a data do estado e a fase de mobilização PH-PRE."
+    when:
+      any:
+        - {path: occupancy_status.code, op: eq, value: OS-DEVOL}
+        - {path: occupancy_status.code, op: startswith, value: OS-IMP}
+    then:
+      all:
+        - {path: occupancy_status.source, op: has_value}
+        - {path: occupancy_status.date, op: has_value}
+        - {path: "phases[id=PH-PRE].id", op: exists}
+
+  - id: CT001
+    severity: warning
+    message: "Vinculação permanente: declarar a cláusula de continuidade e a maioria necessária para a alterar."
+    when: {path: axes.lock.code, op: eq, value: L-PERP}
+    then: {path: operation.public.continuity, op: has_value}
+
+  # ── Economia, fluxos e preço ───────────────────────────────────────────────
+  - id: PY001
+    severity: error
+    message: "E-SUB exige um fluxo pago por subsídio público ou fundo social."
+    when: {path: axes.economics, op: contains_any, value: [E-SUB]}
+    then: {path: "flows[*].payer[*].code", op: contains_any, value: [PY-PUB-PERS, PY-PUB-PROJ, PY-SOC]}
+
+  - id: PY002
+    severity: warning
+    message: "Fluxo com dinheiro público: declarar o compromisso (duração e consequência da falta de verba)."
+    when: {path: "flows[*].payer[*].code", op: contains_any, value: [PY-PUB-PERS, PY-PUB-PROJ, PY-SOC]}
+    then: {path: parameters.public_commitment, op: has_value}
+
+  - id: PY003
+    severity: error
+    message: "Em cada fluxo, as quotas de quem paga somam 1,0."
+    when: {path: flows, op: exists}
+    then: {path: flows, op: each_sum_eq, field: "payer[*].share", value: 1.0}
+
+  - id: FX001
+    severity: error
+    jurisdiction: [PT]
+    message: "Regime cooperativo (pt.coop_dh): declarar os títulos de participação (FL-CAP) com regra de reembolso e o preço do direito (FL-OCC) (DL 502/99, arts. 19.º, 20.º e 24.º). Sujeita a parecer jurídico."
+    when: {path: parameters.jurisdiction.PT.regimes, op: contains, value: pt.coop_dh}
+    then:
+      all:
+        - {path: "flows[*].type", op: contains_all, value: [FL-CAP, FL-OCC]}
+        - {path: "flows[type=FL-CAP].refund", op: has_value}
+
+  - id: FX002
+    severity: warning
+    jurisdiction: [PT]
+    message: "Regime cooperativo: declarar a regra de acesso da segunda geração (DL 502/99, art. 20.º, n.º 2). Sujeita a parecer jurídico."
+    when: {path: parameters.jurisdiction.PT.regimes, op: contains, value: pt.coop_dh}
+    then: {path: parameters.second_generation_access, op: has_value}
+
+  - id: RX001
+    severity: error
+    message: "Teto (E-CAP) com vinculação não admite revisão a valor de mercado (RX-MKT)."
+    when:
+      all:
+        - {path: axes.economics.cap, op: eq, value: E-CAP}
+        - {path: axes.lock.code, op: in, value: [L-TERM, L-SURF, L-PERP]}
+    then: {path: axes.revision, op: contains_none, value: [RX-MKT]}
+
+  - id: RX002
+    severity: warning
+    message: "Regime de custo: a revisão deve seguir o custo (RX-COST) ou os encargos financeiros (RX-FIN), ou ser justificada."
+    when: {path: axes.economics.base, op: eq, value: E-COST}
+    then:
+      any:
+        - {path: axes.revision, op: contains_any, value: [RX-COST, RX-FIN]}
+        - {path: parameters.revision_rationale, op: has_value}
+
+  - id: RX003
+    severity: error
+    message: "Revisão indexada ou escalonada: declarar índice ou taxa e periodicidade; com RX-CAPCPI, também o teto."
+    when: {path: axes.revision, op: contains_any, value: [RX-STEP, RX-CPI, RX-CAPCPI]}
+    then:
+      all:
+        - {path: parameters.revision.index_or_rate, op: has_value}
+        - {path: parameters.revision.period, op: has_value}
+        - any:
+            - {path: axes.revision, op: contains_none, value: [RX-CAPCPI]}
+            - {path: parameters.revision.cap, op: has_value}
+
+  - id: RG001
+    severity: error
+    jurisdiction: [PT]
+    message: "Regime de habitação a custos controlados (pt.hcc): exige teto, transmissão regulada e vinculação com prazo."
+    when: {path: parameters.jurisdiction.PT.regimes, op: contains, value: pt.hcc}
+    then:
+      all:
+        - {path: axes.economics.cap, op: eq, value: E-CAP}
+        - {path: axes.transfer.code, op: eq, value: TR-REG}
+        - {path: axes.lock.code, op: eq, value: L-TERM}
+        - {path: axes.lock.duration, op: has_value}
+
+  - id: TS001
+    severity: warning
+    message: "Residentes vulneráveis com energia contratada pelo operador: a tarifa social exige contrato em nome próprio. Declarar como se assegura um benefício equivalente."
+    when:
+      all:
+        - any:
+            - {path: axes.targeting, op: eq, value: Q-SOC}
+            - {path: axes.population, op: contains, value: PO-VULN}
+        - {path: pricing.energy.contract_holder, op: ne, value: resident}
+    then: {path: parameters.social_tariff_equivalent, op: has_value}
+
+  - id: FI001
+    severity: info
+    message: "Notas de Impacto Social: declarar o capital de impacto e os parâmetros (cupão, horizonte, métrica)."
+    when: {path: axes.finance, op: contains, value: F-NIS}
+    then:
+      all:
+        - {path: axes.finance, op: contains, value: F-IMPACT}
+        - {path: parameters.nis, op: has_value}
+
+  # ── Governação, salvaguardas e população ───────────────────────────────────
+  - id: SN001
+    severity: warning
+    message: "Governação cooperativa: declarar o procedimento sancionatório com fonte legal (Código Cooperativo, arts. 25.º e 26.º)."
+    when:
+      any:
+        - {path: axes.governance, op: contains, value: G-1P1V}
+        - {path: axes.asset_owner.nature, op: eq, value: A-COOP}
+    then: {path: parameters.sanctions_procedure.legal_basis, op: has_value}
+
+  - id: AL001
+    severity: warning
+    message: "Elegibilidade por rendimento ou intermediação: declarar quem atribui as casas."
+    when:
+      any:
+        - {path: axes.targeting, op: in, value: [Q-MID, Q-SOC]}
+        - {path: modules.intermediation, op: contains, value: N-ML}
+    then: {path: operation.public.allocator, op: has_value}
+
+  - id: PO001
+    severity: warning
+    message: "População-alvo específica: declarar o fundamento legal ou regulamentar."
+    when: {path: axes.population, op: contains_any, value: [PO-SEN, PO-YOUNG, PO-STU, PO-FAM, PO-DIS, PO-WORK, PO-VULN, PO-AFF]}
+    then: {path: parameters.population_legal_basis, op: has_value}
+
+  - id: PO002
+    severity: info
+    message: "Habitação sénior sem apoio pessoal ou cuidados: declarar o percurso de cuidados."
+    when:
+      all:
+        - {path: axes.population, op: contains, value: PO-SEN}
+        - {path: "services[*].code", op: contains_none, value: [SV-PERS, SV-CARE]}
+    then: {path: parameters.care_pathway, op: has_value}
+
+  # ── Modos de habitar, serviços e edifício ──────────────────────────────────
+  - id: MX001
+    severity: error
+    message: "Os descritores espaciais declarados têm de coincidir com os derivados da matriz funcional e do inventário de espaços comuns."
+    when: {path: functions, op: exists}
+    then: {op: spatial_derived}
+
+  - id: MX002
+    severity: warning
+    message: "O-COMMON exige pelo menos um espaço comum além das circulações."
+    when: {path: overlays.spatial, op: contains, value: O-COMMON}
+    then: {path: "common_spaces[*].function", op: contains_other_than, value: [circulacao]}
+
+  - id: OV001
+    severity: error
+    message: "Coliving (O-COLIV) exige as regras de uso U-GUEST e U-ROOMS."
+    when: {path: overlays.relational, op: contains, value: O-COLIV}
+    then: {path: modules.use, op: contains_all, value: [U-GUEST, U-ROOMS]}
+
+  - id: CO001
+    severity: error
+    message: "Cohousing (O-COHOUS) exige governação participada e a comunidade entre quem atribui as casas."
+    when: {path: overlays.relational, op: contains, value: O-COHOUS}
+    then:
+      all:
+        - {path: axes.governance, op: contains_any, value: [G-1P1V, G-MULTI]}
+        - {path: operation.public.allocator, op: contains, value: ROLE-COMM}
+
+  - id: CA001
+    severity: warning
+    message: "Cuidados especializados (SV-CARE): declarar o licenciamento como resposta social, se aplicável."
+    when: {path: "services[*].code", op: contains, value: SV-CARE}
+    then: {path: parameters.care_licensing, op: has_value}
+
+  - id: NM001
+    severity: error
+    scope: private
+    message: "Arrendamento institucional com subarrendamento (N-ML): governação pública ou multipartes e risco de ocupação declarado."
+    when: {path: modules.intermediation, op: contains, value: N-ML}
+    then:
+      all:
+        - {path: axes.governance, op: contains_any, value: [G-PUBADM, G-MULTI]}
+        - {path: operation.private.vacancy_risk, op: has_value}
+
+  # ── Camada 6, financiarização e selo ───────────────────────────────────────
+  - id: OP001
+    severity: warning
+    message: "Promoção por fee (D-FEE): retorno RT-FEE, fórmula do fee e forma de divulgação declaradas."
+    when: {path: operation.public.developer, op: contains, value: D-FEE}
+    then:
+      all:
+        - {path: operation.public.developer_return, op: eq, value: RT-FEE}
+        - {path: parameters.fee_formula.value, op: has_value}
+        - {path: parameters.fee_formula.disclosure, op: has_value}
+
+  - id: OP002
+    severity: warning
+    scope: private
+    message: "Cooperativa promovida por terceiro: declarar o dono de obra."
+    when:
+      all:
+        - {path: axes.asset_owner.nature, op: eq, value: A-COOP}
+        - {path: operation.public.developer, op: contains_none, value: [D-COOP]}
+    then: {path: operation.private.works_owner, op: has_value}
+
+  - id: FN001
+    severity: warning
+    message: "Manifesto de projeto: declarar os marcadores de financiarização do cartão público (decisão 52)."
+    when: {path: kind, op: eq, value: project}
+    then:
+      all:
+        - {path: operation.public.owner_vehicle, op: has_value}
+        - {path: operation.public.developer_return, op: has_value}
+        - {path: operation.public.developer_exit, op: has_value}
+        - {path: operation.public.holding_period, op: has_value}
+        - {path: operation.public.leverage, op: has_value}
+        - {path: operation.public.collateral_use, op: has_value}
+
+  - id: SE001
+    severity: error
+    message: "Selo Habitar Commons: só para arranjos desmercantilizados que cumpram todos os critérios, com verificação por terceiro e avaliação pós-ocupação (decisão 53)."
+    when: {path: seal.commons, op: eq, value: true}
+    then:
+      all:
+        - {path: axes.lock.code, op: in, value: [L-PERP, L-SURF]}
+        - {path: operation.public.continuity, op: has_value}
+        - {path: axes.value_capture.resident, op: in, value: [V-0, V-CAP]}
+        - {path: axes.value_capture.entity, op: in, value: [V-0, V-CAP]}
+        - {path: operation.public.developer_return, op: in, value: [RT-FEE, RT-CAPPED, RT-0]}
+        - {path: operation.public.developer_exit, op: in, value: [X-0, X-FEE]}
+        - {path: seal.verification.third_party, op: has_value}
+        - {path: evaluation.poe.level, op: in, value: [indicativo, investigativo, diagnostico]}
+        - {path: evaluation.poe.last_date, op: has_value}
+
+  # ── Manifesto de projeto ───────────────────────────────────────────────────
+  - id: TP001
+    severity: error
+    message: "Manifesto de projeto: os parâmetros não podem ficar por preencher (objetos de esquema ou nulos só em kind: template)."
+    when: {path: kind, op: eq, value: project}
+    then: {path: parameters, op: no_placeholders}
+
+  - id: HX001
+    severity: warning
+    message: "O histórico mostra redução da vinculação, da captura de valor ou das salvaguardas; se houver selo, reavaliar SE001."
+    when: {path: "history[*].version", op: exists}
+    then: {op: history_monotonic}

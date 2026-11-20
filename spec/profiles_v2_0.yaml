@@ -1,0 +1,647 @@
+# Habitar Commons — catálogo dos 19 perfis-base (fonte de verdade)
+# spec: mome.habitar.commons · versão 2.0-rc1 · 20 nov 2026
+# Autores: Francisco Rocha Antunes, Filipa Serôdio Pinheiro · MOME, Porto · CC BY-SA 4.0
+# O id é imutável; o número P é só ordem de apresentação (decisões 45 e 62).
+# '/' assinala alternativas admitidas pelo perfil; '→' mudança de fase.
+spec: mome.habitar.commons
+version: 2.0-rc1
+profiles:
+- n: P01
+  id: own-market
+  name: Compra (mercado)
+  family: propriedade
+  family_name: Propriedade
+  headlines:
+  - H-OWN-MKT-PERM-0
+  axes:
+    Título de ocupação (H1): OT-OWN
+    Natureza do titular do edifício (A4): A-IND
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-OWN
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-OWN
+    Duração do direito (categoria derivada, V2): T-PERM
+    Transferibilidade: TR-FREE
+    Regra económica (V1): E-MKT
+    Captura de valor (residente · entidade) (A2): V-FREE
+    Financiamento: F-MTG
+    Vinculação da acessibilidade (lock): L-0
+    Fluxos principais (A2, U1; payer passa a atributo): 'acesso: preço · ocupação: encargos do proprietário'
+    Revisão (revision): n.a. (preço único)
+    Governação: G-IND / G-CONDO
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): O-LIVEWORK (opcional)
+    Serviços (SV-*) (M3): —
+    Padrão de referência: A
+    Quem atribui (allocator): ROLE-PRM (venda livre)
+    Elegível para o selo commons (N2): Não
+- n: P02
+  id: own-cost
+  name: Propriedade ao custo (autopromoção)
+  family: propriedade
+  family_name: Propriedade
+  headlines:
+  - H-OWN-COST-PERM-INIT
+  axes:
+    Título de ocupação (H1): OT-OWN
+    Natureza do titular do edifício (A4): A-COOP → A-IND
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-OWN
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-OWN
+    Duração do direito (categoria derivada, V2): T-PERM
+    Transferibilidade: TR-FREE / TR-REG
+    Regra económica (V1): E-COST
+    Captura de valor (residente · entidade) (A2): V-FREE / V-CAP
+    Financiamento: F-COLFIN → F-MTG
+    Vinculação da acessibilidade (lock): L-INIT (/ L-TERM 30 anos com apoio do Estado, art. 28.º)
+    Fluxos principais (A2, U1; payer passa a atributo): 'acesso: preço ao custo (art. 27.º DL 502/99) · ocupação: encargos do proprietário'
+    Revisão (revision): n.a. (preço ao custo)
+    Governação: G-1P1V → G-IND / G-CONDO
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-DEV → PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-COOP na admissão
+    Elegível para o selo commons (N2): Não (L-INIT)
+- n: P03
+  id: cohousing-own
+  name: Cohousing em propriedade
+  family: propriedade
+  family_name: Propriedade
+  headlines:
+  - H-COHO-COST-PERM-INIT
+  - H-COHO-COST-PERM-TERM
+  axes:
+    Título de ocupação (H1): OT-OWN
+    Natureza do titular do edifício (A4): A-IND (frações) + comuns em compropriedade ou A-COOP
+    Regime patrimonial · finalidade (A4): AR-FULL + AR-CO (comuns) · PU-OWN
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-OWN (+ direito sobre os comuns)
+    Duração do direito (categoria derivada, V2): T-PERM
+    Transferibilidade: TR-APP (preferência ou aprovação da comunidade)
+    Regra económica (V1): E-COST
+    Captura de valor (residente · entidade) (A2): V-FREE / V-CAP
+    Financiamento: F-COLFIN → F-MTG
+    Vinculação da acessibilidade (lock): L-INIT / L-TERM
+    Fluxos principais (A2, U1; payer passa a atributo): 'acesso: preço ao custo · ocupação: quotas dos comuns'
+    Revisão (revision): RX-COST (quotas dos comuns)
+    Governação: G-1P1V (comunidade) + G-CONDO
+    Salvaguardas (V3): S-STD (+ procedimento sancionatório)
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-GEN / PO-SEN / PO-AFF
+    Fases (phases) (H3): PH-DEV → PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT + O-COMMON
+    Overlays relacionais e programáticos (M2): O-COHOUS
+    Serviços (SV-*) (M3): SV-RES (opcional)
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-COMM
+    Elegível para o selo commons (N2): Não (L-INIT / L-TERM)
+- n: P04
+  id: own-resale-cap
+  name: Propriedade com revenda limitada
+  family: propriedade
+  family_name: Propriedade
+  headlines:
+  - H-OWN-CAP-PERM-TERM
+  - H-OWN-CAP-PERM-PERP
+  axes:
+    Título de ocupação (H1): OT-OWN
+    Natureza do titular do edifício (A4): A-IND
+    Regime patrimonial · finalidade (A4): AR-BOUND (ónus de revenda) · PU-OWN
+    Titular do solo (land_owner): igual ao edifício / A-FUND / A-ASSOC (modelo CLT)
+    Reversão (reversion): RV-0
+    Direito do residente: R-OWN
+    Duração do direito (categoria derivada, V2): T-PERM
+    Transferibilidade: TR-REG
+    Regra económica (V1): E-CAP
+    Captura de valor (residente · entidade) (A2): V-CAP
+    Financiamento: F-MTG
+    Vinculação da acessibilidade (lock): L-TERM / L-PERP
+    Fluxos principais (A2, U1; payer passa a atributo): 'acesso: preço limitado · saída: revenda com preço máximo'
+    Revisão (revision): RX-CPI (preço máximo de revenda)
+    Governação: G-IND / G-CONDO
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: B
+    Quem atribui (allocator): ROLE-PRM, com elegibilidade verificada
+    Elegível para o selo commons (N2): Conforme parâmetros
+- n: P05
+  id: hybrid-rtb
+  name: Híbridos (rent-to-buy, shared equity)
+  family: propriedade
+  family_name: Propriedade
+  headlines:
+  - H-HYB-CAP-LONG-TERM
+  axes:
+    Título de ocupação (H1): OT-OWN / OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-MIX
+    Regime patrimonial · finalidade (A4): AR-FULL / AR-CO · PU-COM / PU-OWN
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LEASE + R-OWN (ou R-REAL-LIM)
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-REG
+    Regra económica (V1): 'base: E-HYB · cap: E-CAP'
+    Captura de valor (residente · entidade) (A2): V-CAP
+    Financiamento: F-MTG + F-OPFIN
+    Vinculação da acessibilidade (lock): L-TERM
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda · capital: aquisição progressiva de quota'
+    Revisão (revision): RX-CPI / RX-STEP
+    Governação: G-MULTI
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN / PO-YOUNG
+    Fases (phases) (H3): PH-OP (fases de transição a declarar)
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: K
+    Quem atribui (allocator): ROLE-OWN
+    Elegível para o selo commons (N2): Não
+- n: P06
+  id: lease-market-mid
+  name: Arrendamento de mercado, duração média
+  family: mercado
+  family_name: Arrendamento de mercado
+  headlines:
+  - H-LEASE-MKT-MID-0
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-IND / A-CORP
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-COM
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LEASE
+    Duração do direito (categoria derivada, V2): T-MID
+    Transferibilidade: TR-0
+    Regra económica (V1): E-MKT
+    Captura de valor (residente · entidade) (A2): V-FREE
+    Financiamento: F-OPFIN
+    Vinculação da acessibilidade (lock): L-0
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda · serviços e energia: declarar (U1)'
+    Revisão (revision): RX-CPI (coeficiente legal) / RX-MKT na renovação
+    Governação: G-LANDLORD
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-OWN
+    Elegível para o selo commons (N2): Não
+- n: P07
+  id: lease-market-long
+  name: Arrendamento de mercado estável
+  family: mercado
+  family_name: Arrendamento de mercado
+  headlines:
+  - H-LEASE-MKT-LONG-0
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-IND / A-CORP
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-COM
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LEASE (+ EMP se habitação de função)
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-0
+    Regra económica (V1): E-MKT
+    Captura de valor (residente · entidade) (A2): V-FREE
+    Financiamento: F-OPFIN
+    Vinculação da acessibilidade (lock): L-0
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda · serviços e energia: declarar (U1)'
+    Revisão (revision): RX-CPI
+    Governação: G-LANDLORD
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT / O-MICRO
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): SV-RES
+    Padrão de referência: C
+    Quem atribui (allocator): ROLE-OWN / ROLE-OPR
+    Elegível para o selo commons (N2): Não
+- n: P08
+  id: licence-sub
+  name: Licença / subscrição (só com título habitacional)
+  family: mercado
+  family_name: Arrendamento de mercado
+  headlines:
+  - H-LIC-MKT-SHORT-0
+  axes:
+    Título de ocupação (H1): OT-LEASE-TERM / OT-STUDENT
+    Natureza do titular do edifício (A4): A-CORP
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-COM
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LIC / R-LEASE (+ EMP)
+    Duração do direito (categoria derivada, V2): T-SHORT / T-MID
+    Transferibilidade: TR-0
+    Regra económica (V1): E-MKT
+    Captura de valor (residente · entidade) (A2): V-FREE
+    Financiamento: F-OPFIN
+    Vinculação da acessibilidade (lock): L-0
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: preço de subscrição · serviços incluídos ou não (U1)'
+    Revisão (revision): RX-MKT
+    Governação: G-LANDLORD
+    Salvaguardas (V3): S-STD
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-GEN / PO-YOUNG / PO-STU
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-SHARE / O-UNIT-PART + O-COMMON
+    Overlays relacionais e programáticos (M2): O-COLIV
+    Serviços (SV-*) (M3): SV-RES + SV-DOM
+    Padrão de referência: D
+    Quem atribui (allocator): ROLE-OPR
+    Elegível para o selo commons (N2): Não
+- n: P09
+  id: lease-capped
+  name: Arrendamento com teto regulado
+  family: regulado-social
+  family_name: Arrendamento regulado e social
+  headlines:
+  - H-LEASE-CAP-LONG-TERM
+  - H-LEASE-CAP-LONG-SURF
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-IND / A-CORP / A-PUB
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-COM / PU-PUB
+    Titular do solo (land_owner): igual ao edifício / A-PUB
+    Reversão (reversion): RV-0 / RV-PUB
+    Direito do residente: R-LEASE
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-0
+    Regra económica (V1): 'base: E-CAP (· sub: E-SUB)'
+    Captura de valor (residente · entidade) (A2): V-FREE / V-0 (se RV-PUB)
+    Financiamento: F-OPFIN (+ F-PUB)
+    Vinculação da acessibilidade (lock): L-TERM / L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda com teto · subsídio: PY-PUB-PERS / PY-PUB-PROJ'
+    Revisão (revision): RX-CAPCPI
+    Governação: G-LANDLORD / G-PUBADM
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-MID
+    População-alvo (population): PO-GEN / PO-FAM / PO-WORK
+    Fases (phases) (H3): (PH-PRE →) PH-OP (→ PH-END se RV)
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): SV-RES
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-OWN (RSAA) / ROLE-PUB (N-ML)
+    Elegível para o selo commons (N2): Conforme parâmetros
+- n: P10
+  id: lease-cost
+  name: Arrendamento custo-base
+  family: regulado-social
+  family_name: Arrendamento regulado e social
+  headlines:
+  - H-LEASE-COST-LONG-TERM
+  - H-LEASE-COST-LONG-SURF
+  - H-LEASE-COST-LONG-PERP
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-CORP / A-PUB / A-FUND / A-ASSOC
+    Regime patrimonial · finalidade (A4): 'AR-FULL · PU-SOC / PU-PUB / PU-HYB (património vinculado de fundação ou associação: P19)'
+    Titular do solo (land_owner): igual ao edifício / A-PUB
+    Reversão (reversion): RV-0 / RV-PUB
+    Direito do residente: R-LEASE
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-0
+    Regra económica (V1): 'base: E-COST · cap: E-CAP'
+    Captura de valor (residente · entidade) (A2): V-0 / V-CAP
+    Financiamento: F-OPFIN / F-PUB / F-IMPACT
+    Vinculação da acessibilidade (lock): L-TERM / L-SURF / L-PERP
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda ao custo'
+    Revisão (revision): RX-COST
+    Governação: G-LANDLORD / G-PUBADM
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN / PO-WORK / PO-SEN
+    Fases (phases) (H3): (PH-PRE →) PH-OP (→ PH-END se RV)
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): O-CARE (derivado, se SV-PERS / SV-CARE)
+    Serviços (SV-*) (M3): SV-PERS / SV-CARE (opcional)
+    Padrão de referência: I
+    Quem atribui (allocator): ROLE-OPR (ou ROLE-PUB)
+    Elegível para o selo commons (N2): Conforme parâmetros
+- n: P11
+  id: lease-social
+  name: Arrendamento social / renda apoiada
+  family: regulado-social
+  family_name: Arrendamento regulado e social
+  headlines:
+  - H-LEASE-INCOME-LONG-PERP
+  - H-LEASE-INCOME-LONG-TERM
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-PUB / A-FUND / A-ASSOC
+    Regime patrimonial · finalidade (A4): AR-FULL / AR-AFF · PU-PUB / PU-SOC
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LEASE
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-0
+    Regra económica (V1): 'base: E-INCOME · sub: E-SUB'
+    Captura de valor (residente · entidade) (A2): V-0
+    Financiamento: F-PUB
+    Vinculação da acessibilidade (lock): L-PERP / L-TERM
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda apoiada · subsídio: PY-PUB-PROJ'
+    Revisão (revision): RX-INC
+    Governação: G-PUBADM
+    Salvaguardas (V3): S-PROT + S-PROT-VULN
+    Elegibilidade: Q-SOC
+    População-alvo (population): PO-VULN / PO-FAM / PO-SEN
+    Fases (phases) (H3): (PH-PRE →) PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT / O-SHARE
+    Overlays relacionais e programáticos (M2): O-COLIV, O-CARE (derivado)
+    Serviços (SV-*) (M3): SV-PERS / SV-CARE (opcional)
+    Padrão de referência: E
+    Quem atribui (allocator): ROLE-PUB
+    Elegível para o selo commons (N2): Conforme parâmetros
+- n: P12
+  id: temporary-emergency
+  name: Emergência / transição
+  family: regulado-social
+  family_name: Arrendamento regulado e social
+  headlines:
+  - H-TEMP-SUB-SHORT-TERM
+  axes:
+    Título de ocupação (H1): OT-EMERG
+    Natureza do titular do edifício (A4): A-PUB / A-FUND / A-ASSOC
+    Regime patrimonial · finalidade (A4): AR-AFF · PU-PUB / PU-SOC
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0
+    Direito do residente: R-LIC / R-TEMP
+    Duração do direito (categoria derivada, V2): T-SHORT
+    Transferibilidade: TR-0
+    Regra económica (V1): E-SUB
+    Captura de valor (residente · entidade) (A2): V-0
+    Financiamento: F-PUB (+ F-IMPACT)
+    Vinculação da acessibilidade (lock): L-TERM
+    Fluxos principais (A2, U1; payer passa a atributo): 'subsídio: PY-PUB-PROJ / PY-INS'
+    Revisão (revision): RX-FIX
+    Governação: G-PUBADM
+    Salvaguardas (V3): S-PROT + S-PROT-VULN
+    Elegibilidade: Q-SOC
+    População-alvo (population): PO-VULN
+    Fases (phases) (H3): PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT / O-SHARE
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): SV-RES / SV-PERS
+    Padrão de referência: J
+    Quem atribui (allocator): ROLE-PUB
+    Elegível para o selo commons (N2): Não (L-TERM)
+- n: P13
+  id: coop-cost
+  name: Cooperativa custo-base
+  family: cooperativa
+  family_name: Cooperativa
+  headlines:
+  - H-MEMB-COST-MBR-PERP
+  - H-MEMB-COST-MBR-SURF
+  axes:
+    Título de ocupação (H1): OT-RIGHT / OT-LEASE-PERM (inquilinato cooperativo)
+    Natureza do titular do edifício (A4): A-COOP
+    Regime patrimonial · finalidade (A4): AR-FULL (reservas não repartíveis) · PU-COOP
+    Titular do solo (land_owner): igual ao edifício / A-PUB / A-FUND / A-ASSOC
+    Reversão (reversion): RV-0 / RV-PUB / RV-PRIV
+    Direito do residente: R-REAL-LIM:DUH + MEMB com pt.coop_dh / R-LEASE + MEMB (art. 25.º)
+    Duração do direito (categoria derivada, V2): 'T-MBR (term.type: membership)'
+    Transferibilidade: TR-APP + MEMB (art. 22.º, n.º 1); por morte sem autorização (n.º 2)
+    Regra económica (V1): 'base: E-COST (· cap: E-CAP)'
+    Captura de valor (residente · entidade) (A2): 'residente: V-0 · entidade: reservas não repartíveis (art. 99.º CCoop)'
+    Financiamento: F-COLFIN (+ F-IMPACT); sem F-MTG sobre o direito (PT001)
+    Vinculação da acessibilidade (lock): L-PERP / L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): 'capital: títulos (art. 20.º) · ocupação: preço do direito (art. 19.º) e quotas para fundos
+      (art. 12.º) · saída: reembolso com juros (art. 24.º)'
+    Revisão (revision): RX-COST / RX-FIN (após amortização, art. 19.º, n.º 4)
+    Governação: G-1P1V
+    Salvaguardas (V3): 'S-PROT-VULN (+ procedimento: arts. 25.º e 26.º CCoop)'
+    Elegibilidade: Q-OPEN / Q-MID (via critérios de inclusão, art. 9.º)
+    População-alvo (population): PO-GEN (PO-SEN em cohousing sénior)
+    Fases (phases) (H3): (PH-PRE →) PH-DEV → PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT (+ O-COMMON)
+    Overlays relacionais e programáticos (M2): O-COHOUS (opcional)
+    Serviços (SV-*) (M3): —
+    Padrão de referência: F, G
+    Quem atribui (allocator): ROLE-COOP
+    Elegível para o selo commons (N2): Sim, se cumpridos os critérios
+- n: P14
+  id: coop-social
+  name: Cooperativa social
+  family: cooperativa
+  family_name: Cooperativa
+  headlines:
+  - H-MEMB-INCOME-MBR-PERP
+  - H-MEMB-INCOME-MBR-SURF
+  axes:
+    Título de ocupação (H1): OT-RIGHT / OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-COOP
+    Regime patrimonial · finalidade (A4): AR-FULL (reservas não repartíveis) · PU-COOP
+    Titular do solo (land_owner): igual ao edifício / A-PUB / A-FUND / A-ASSOC
+    Reversão (reversion): RV-0 / RV-PUB / RV-PRIV
+    Direito do residente: R-REAL-LIM:DUH + MEMB com pt.coop_dh / R-LEASE + MEMB
+    Duração do direito (categoria derivada, V2): 'T-MBR (term.type: membership)'
+    Transferibilidade: TR-APP + MEMB (art. 22.º, n.º 1); por morte sem autorização (n.º 2)
+    Regra económica (V1): 'base: E-COST · income: E-INCOME (· sub: E-SUB)'
+    Captura de valor (residente · entidade) (A2): 'residente: V-0 · entidade: reservas não repartíveis'
+    Financiamento: F-COLFIN + F-PUB (+ F-IMPACT)
+    Vinculação da acessibilidade (lock): L-PERP / L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): 'como P13 + subsídio: PY-PUB-PERS'
+    Revisão (revision): RX-INC + RX-COST / RX-FIN
+    Governação: G-1P1V
+    Salvaguardas (V3): S-PROT + S-PROT-VULN (+ procedimento)
+    Elegibilidade: Q-SOC
+    População-alvo (population): PO-VULN / PO-FAM
+    Fases (phases) (H3): (PH-PRE →) PH-DEV → PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: H
+    Quem atribui (allocator): ROLE-COOP, com encaminhamento de ROLE-PUB
+    Elegível para o selo commons (N2): Sim, se cumpridos os critérios
+- n: P15
+  id: coop-cost-mid
+  name: Cooperativa custo-base, duração média
+  family: cooperativa
+  family_name: Cooperativa
+  headlines:
+  - H-MEMB-COST-MID-PERP
+  - H-MEMB-COST-MID-SURF
+  axes:
+    Título de ocupação (H1): OT-RIGHT / OT-LEASE-PERM
+    Natureza do titular do edifício (A4): A-COOP
+    Regime patrimonial · finalidade (A4): AR-FULL (reservas não repartíveis) · PU-COOP
+    Titular do solo (land_owner): igual ao edifício / A-PUB / A-FUND / A-ASSOC
+    Reversão (reversion): RV-0 / RV-PUB / RV-PRIV
+    Direito do residente: R-REAL-LIM:DUH + MEMB com pt.coop_dh / R-LEASE + MEMB
+    Duração do direito (categoria derivada, V2): T-MID (extinção estatutária, art. 23.º, n.º 2)
+    Transferibilidade: TR-APP + MEMB (art. 22.º, n.º 1); por morte sem autorização (n.º 2)
+    Regra económica (V1): 'base: E-COST · cap: E-CAP'
+    Captura de valor (residente · entidade) (A2): 'residente: V-0 · entidade: reservas não repartíveis'
+    Financiamento: F-COLFIN
+    Vinculação da acessibilidade (lock): L-PERP / L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): como P13 (+ PY-EMP)
+    Revisão (revision): RX-COST / RX-FIN
+    Governação: G-1P1V
+    Salvaguardas (V3): S-PROT-VULN (+ procedimento)
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-YOUNG / PO-STU / PO-WORK
+    Fases (phases) (H3): (PH-PRE →) PH-DEV → PH-OP
+    Descritor espacial (derivado da matriz, M1): O-UNIT-PART / O-SHARE + O-COMMON
+    Overlays relacionais e programáticos (M2): O-COLIV
+    Serviços (SV-*) (M3): SV-RES + SV-DOM
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-COOP
+    Elegível para o selo commons (N2): Sim, se cumpridos os critérios
+- n: P16
+  id: real-limited
+  name: Direitos reais limitados
+  family: direitos-reais-guardia
+  family_name: Direitos reais e entidade guardiã
+  headlines:
+  - H-REAL-CAP-LONG-SURF
+  axes:
+    Título de ocupação (H1): OT-RIGHT
+    Natureza do titular do edifício (A4): A-IND / A-FUND / A-ASSOC / A-PUB
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-PUB / PU-SOC
+    Titular do solo (land_owner): A-PUB / A-FUND / A-ASSOC
+    Reversão (reversion): RV-PUB / RV-PRIV
+    Direito do residente: R-REAL-LIM (:SURF / :USUF / :DUH / :DHD)
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-REG
+    Regra económica (V1): E-CAP / E-COST
+    Captura de valor (residente · entidade) (A2): V-CAP / V-0
+    Financiamento: F-MTG (só :SURF / :USUF; :DHD só para a caução) / F-PUB
+    Vinculação da acessibilidade (lock): L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: cânon ou prestação'
+    Revisão (revision): RX-CPI / RX-STEP (cânon de superfície)
+    Governação: G-MULTI / G-PUBADM
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN
+    Fases (phases) (H3): PH-OP → PH-END
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: L
+    Quem atribui (allocator): ROLE-PUB ou ROLE-PRM
+    Elegível para o selo commons (N2): Conforme parâmetros
+- n: P17
+  id: senior-usufruct-entry
+  name: Usufruto ou DHD sénior com entrada
+  family: direitos-reais-guardia
+  family_name: Direitos reais e entidade guardiã
+  headlines:
+  - H-REAL-ENTRY-LIFE-TERM
+  - H-REAL-ENTRY-LIFE-PERP
+  axes:
+    Título de ocupação (H1): OT-RIGHT
+    Natureza do titular do edifício (A4): A-FUND / A-ASSOC / A-CORP / A-PUB (operador nu-proprietário)
+    Regime patrimonial · finalidade (A4): AR-FULL · PU-SOC / PU-COM
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0 (consolidação na nua propriedade)
+    Direito do residente: R-REAL-LIM:USUF / :DHD
+    Duração do direito (categoria derivada, V2): T-LIFE
+    Transferibilidade: TR-REG (conforme título)
+    Regra económica (V1): 'entry: E-ENTRY · services: E-COST'
+    Captura de valor (residente · entidade) (A2): 'residente: V-0 · entidade: V-0 (sem fins lucrativos) / V-FREE (privado)'
+    Financiamento: F-OPFIN + entradas dos residentes (F-MTG para a caução, se :DHD)
+    Vinculação da acessibilidade (lock): L-TERM / L-PERP
+    Fluxos principais (A2, U1; payer passa a atributo): 'acesso: entrada (E-ENTRY) · serviços'
+    Revisão (revision): 'entrada fixa; serviços RX-CPI (DHD: IPC sem habitação, supletivo)'
+    Governação: G-LANDLORD / G-MULTI
+    Salvaguardas (V3): S-PROT + S-PROT-VULN
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-SEN
+    Fases (phases) (H3): PH-OP → PH-END (óbito ou saída)
+    Descritor espacial (derivado da matriz, M1): O-UNIT (+ O-COMMON)
+    Overlays relacionais e programáticos (M2): O-CARE (derivado, opcional)
+    Serviços (SV-*) (M3): SV-RES (+ SV-PERS / SV-CARE)
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-OPR
+    Elegível para o selo commons (N2): Conforme parâmetros (A sem fins lucrativos)
+- n: P18
+  id: senior-bare-ownership
+  name: Venda da nua propriedade com reserva de usufruto
+  family: direitos-reais-guardia
+  family_name: Direitos reais e entidade guardiã
+  headlines:
+  - H-REAL-RELEASE-LIFE-0
+  axes:
+    Título de ocupação (H1): OT-RIGHT
+    Natureza do titular do edifício (A4): A-IND → A-CORP / A-FUND (investidor nu-proprietário)
+    Regime patrimonial · finalidade (A4): AR-FULL (nua propriedade) · PU-COM / PU-SOC
+    Titular do solo (land_owner): igual ao edifício
+    Reversão (reversion): RV-0 (consolidação na nua propriedade)
+    Direito do residente: R-REAL-LIM:USUF (reservado)
+    Duração do direito (categoria derivada, V2): T-LIFE
+    Transferibilidade: TR-REG (extingue-se com o usufrutuário)
+    Regra económica (V1): E-RELEASE (o residente recebe o preço atuarial da nua propriedade)
+    Captura de valor (residente · entidade) (A2): 'residente: n.a. · investidor: V-FREE'
+    Financiamento: F-OPFIN do investidor (+ F-IMPACT)
+    Vinculação da acessibilidade (lock): L-0
+    Fluxos principais (A2, U1; payer passa a atributo): 'capital: o investidor paga ao residente o preço da nua propriedade'
+    Revisão (revision): n.a.
+    Governação: G-IND (usufrutuário; obras extraordinárias do nu-proprietário)
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-OPEN
+    População-alvo (population): PO-SEN
+    Fases (phases) (H3): PH-DEV (venda da nua propriedade) → PH-OP → PH-END (óbito)
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: —
+    Quem atribui (allocator): n.a. (o residente fica na sua casa)
+    Elegível para o selo commons (N2): Não
+- n: P19
+  id: guardian-clt
+  name: Ativo em entidade guardiã (modelo CLT)
+  family: direitos-reais-guardia
+  family_name: Direitos reais e entidade guardiã
+  headlines:
+  - H-GUARD-COST-LONG-PERP
+  - H-GUARD-COST-LONG-SURF
+  axes:
+    Título de ocupação (H1): OT-LEASE-PERM / OT-RIGHT
+    Natureza do titular do edifício (A4): A-FUND / A-ASSOC
+    Regime patrimonial · finalidade (A4): AR-BOUND · PU-SOC / PU-PHIL
+    Titular do solo (land_owner): A-FUND / A-ASSOC / A-PUB / A-IND / A-COOP
+    Reversão (reversion): RV-0 / RV-PUB / RV-PRIV
+    Direito do residente: R-LEASE / R-REAL-LIM
+    Duração do direito (categoria derivada, V2): T-LONG
+    Transferibilidade: TR-REG
+    Regra económica (V1): E-COST
+    Captura de valor (residente · entidade) (A2): V-0 / V-CAP
+    Financiamento: F-COLFIN / F-PUB / F-IMPACT / F-NIS
+    Vinculação da acessibilidade (lock): L-PERP / L-SURF
+    Fluxos principais (A2, U1; payer passa a atributo): 'ocupação: renda ao custo (+ PY-PUB-PERS)'
+    Revisão (revision): RX-COST
+    Governação: G-MULTI
+    Salvaguardas (V3): S-PROT
+    Elegibilidade: Q-OPEN / Q-MID
+    População-alvo (population): PO-GEN / PO-WORK / PO-SEN
+    Fases (phases) (H3): (PH-PRE →) PH-OP (→ PH-END se RV)
+    Descritor espacial (derivado da matriz, M1): O-UNIT
+    Overlays relacionais e programáticos (M2): —
+    Serviços (SV-*) (M3): —
+    Padrão de referência: —
+    Quem atribui (allocator): ROLE-OPR (entidade guardiã)
+    Elegível para o selo commons (N2): Sim, se cumpridos os critérios

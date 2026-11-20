@@ -1,0 +1,275 @@
+# Habitar Commons — ruleset do validador de compatibilidade
+# spec: mome.habitar.commons · versão 1.3.1 · 10 nov 2026
+# Autores: Francisco Rocha Antunes, Filipa Serôdio Pinheiro · MOME, Porto
+# Licença: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+# Documento técnico de referência, não jurídico. O validador verifica a coerência interna
+# do manifesto; não verifica a conformidade jurídica nem a correspondência com os documentos.
+#
+# SEMÂNTICA
+#   Uma regra é violada quando `when` é verdadeiro e `then` é falso.
+#   Regras sem `then` são informativas: assinalam o caso quando `when` é verdadeiro.
+#   Um caminho inexistente torna falsa a condição em que aparece.
+#
+# OPERADORES (o tipo de cada campo está em manifest.schema.json)
+#   escalares: eq, ne, in, not_in
+#   listas:    contains, contains_any, contains_all, contains_none, subset_of
+#   qualquer:  exists (o campo existe), has_value (tem valor preenchido; um objeto de
+#              esquema como {type: ..., description: ...} não conta como valor)
+#   números:   sum_eq (soma de uma lista de números, tolerância 0,001)
+#
+# CAMINHOS
+#   a.b.c                       campo aninhado
+#   phases[id=PH-DEV].event     elemento de uma lista de objetos, escolhido pelo campo id
+#   payer[*].code               lista com o campo code de todos os elementos
+# REFERÊNCIAS
+#   value: {ref: axes.asset_owner}   compara com o valor de outro campo do manifesto
+#
+# MANIFESTOS-MODELO
+#   Em manifestos com kind: template, as falhas de has_value são relatadas como
+#   "a preencher por projeto" (info) e não como violação da regra.
+
+spec: mome.habitar.commons
+ruleset_version: "1.3.1"
+spec_license: CC-BY-SA-4.0
+
+rules:
+
+  - id: AX002
+    severity: error
+    message: "F-MTG exige R-OWN, R-REAL-LIM:SURF ou R-REAL-LIM:USUF."
+    when: {path: axes.finance, op: contains, value: F-MTG}
+    then: {path: axes.resident_right, op: in, value: [R-OWN, "R-REAL-LIM:SURF", "R-REAL-LIM:USUF"]}
+
+  - id: OV001
+    severity: error
+    message: "O-COLIV exige U-GUEST e U-ROOMS."
+    when: {path: overlays, op: contains, value: O-COLIV}
+    then: {path: modules.use, op: contains_all, value: [U-GUEST, U-ROOMS]}
+
+  - id: PT001
+    severity: error
+    jurisdiction: [PT]
+    message: "Um direito de uso e habitação não pode ser hipotecado: não consta do art. 688.º do Código Civil e o art. 1488.º proíbe onerá-lo. Vale também para o direito de habitação cooperativo (DL 502/99, art. 19.º, n.º 1)."
+    when: {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DUH"}
+    then: {path: axes.finance, op: contains_none, value: [F-MTG]}
+
+  - id: PT002
+    severity: warning
+    jurisdiction: [PT]
+    message: "Direito de habitação cooperativo: declarar o regime de transmissão. Por omissão, o DL 502/99 permite a alienação entre vivos com acordo da assembleia geral (art. 22.º, n.º 1) e a transmissão por morte (art. 22.º, n.º 2). Se os estatutos o restringirem, declarar statutes_ref. Validade de restrições estatutárias em revisão jurídica."
+    when:
+      all:
+        - {path: axes.resident_right, op: eq, value: "R-REAL-LIM:DUH"}
+        - {path: axes.right_condition, op: contains, value: MEMB}
+    then:
+      all:
+        - {path: parameters.transfer_regime.legal_basis, op: has_value}
+        - {path: parameters.transfer_regime.mechanism, op: has_value}
+
+  - id: LK001
+    severity: warning
+    message: "Teto ou custo sem vinculação: justificar ou rever o lock."
+    when:
+      all:
+        - {path: axes.economics, op: contains_any, value: [E-CAP, E-COST]}
+        - {path: axes.lock, op: eq, value: L-0}
+    then: {path: parameters.lock_rationale, op: has_value}
+
+  - id: LK002
+    severity: error
+    message: "L-TERM exige lock_years."
+    when: {path: axes.lock, op: eq, value: L-TERM}
+    then: {path: parameters.lock_years, op: has_value}
+
+  - id: LK003
+    severity: error
+    message: "L-SURF exige solo e edifício com titulares diferentes (ou R-REAL-LIM:SURF) e reversão declarada."
+    when: {path: axes.lock, op: eq, value: L-SURF}
+    then:
+      all:
+        - any:
+            - {path: axes.land_owner, op: ne, value: {ref: axes.asset_owner}}
+            - {path: axes.resident_right, op: eq, value: "R-REAL-LIM:SURF"}
+        - {path: axes.reversion, op: ne, value: RV-0}
+
+  - id: LD001
+    severity: error
+    message: "Titular do solo diferente do edifício exige reversão e prazo da superfície."
+    when: {path: axes.land_owner, op: ne, value: {ref: axes.asset_owner}}
+    then:
+      all:
+        - {path: axes.reversion, op: exists}
+        - {path: parameters.surface_term, op: has_value}
+
+  - id: LD002
+    severity: warning
+    message: "Reversão para proprietário privado com vinculação longa: declarar a proteção da acessibilidade após a reversão."
+    when:
+      all:
+        - {path: axes.reversion, op: eq, value: RV-PRIV}
+        - {path: axes.lock, op: in, value: [L-SURF, L-PERP]}
+    then: {path: parameters.post_reversion_protection, op: has_value}
+
+  - id: NM001
+    severity: error
+    message: "N-ML exige governação G-PUBADM ou G-MULTI e o risco de vacância declarado na Camada 6."
+    when: {path: modules.intermediation, op: contains, value: N-ML}
+    then:
+      all:
+        - {path: axes.governance, op: contains_any, value: [G-PUBADM, G-MULTI]}
+        - {path: operation.vacancy_risk, op: exists}
+
+  - id: PH001
+    severity: error
+    message: "Fase PH-DEV declarada: declarar o evento de transição para PH-OP."
+    when: {path: "phases[*].id", op: contains, value: PH-DEV}
+    then: {path: "phases[id=PH-DEV].transition_event", op: has_value}
+
+  - id: PH002
+    severity: error
+    message: "Reversão diferente de RV-0 exige a fase PH-END."
+    when: {path: axes.reversion, op: in, value: [RV-PUB, RV-PRIV]}
+    then: {path: "phases[*].id", op: contains, value: PH-END}
+
+  - id: FI001
+    severity: info
+    message: "F-NIS: declarar também F-IMPACT, cupão, horizonte e métrica de impacto."
+    when: {path: axes.finance, op: contains, value: F-NIS}
+    then:
+      all:
+        - {path: axes.finance, op: contains, value: F-IMPACT}
+        - {path: parameters.nis, op: has_value}
+
+  - id: OP001
+    severity: warning
+    message: "D-FEE: declarar RT-FEE, a fórmula do fee e a forma de a divulgar a residentes ou cooperadores."
+    when: {path: operation.developer, op: contains, value: D-FEE}
+    then:
+      all:
+        - {path: operation.developer_return, op: eq, value: RT-FEE}
+        - {path: parameters.fee_formula.formula, op: has_value}
+        - {path: parameters.fee_formula.disclosure, op: has_value}
+
+  - id: OP002
+    severity: warning
+    message: "Edifício cooperativo sem autopromoção cooperativa: confirmar quem é dono de obra."
+    when:
+      all:
+        - {path: axes.asset_owner, op: eq, value: A-COOP}
+        - {path: operation.developer, op: contains_none, value: [D-COOP]}
+    then: {path: operation.works_owner, op: exists}
+
+  - id: AL001
+    severity: warning
+    message: "Elegibilidade intermédia ou social, ou intermediação: declarar quem atribui as casas (allocator)."
+    when:
+      any:
+        - {path: axes.targeting, op: in, value: [Q-MID, Q-SOC]}
+        - {path: modules.intermediation, op: contains, value: N-ML}
+    then: {path: operation.allocator, op: has_value}
+
+  - id: PY001
+    severity: error
+    message: "E-SUB exige um pagador público ou social (PY-PUB-PERS, PY-PUB-PROJ ou PY-SOC)."
+    when: {path: axes.economics, op: contains, value: E-SUB}
+    then: {path: "axes.payer[*].code", op: contains_any, value: [PY-PUB-PERS, PY-PUB-PROJ, PY-SOC]}
+
+  - id: PY002
+    severity: warning
+    message: "Pagador público ou social: declarar a duração do compromisso público e o que acontece se a verba anual falhar."
+    when: {path: "axes.payer[*].code", op: contains_any, value: [PY-PUB-PERS, PY-PUB-PROJ, PY-SOC]}
+    then: {path: parameters.public_commitment, op: has_value}
+
+  - id: PY003
+    severity: error
+    message: "As quotas dos pagadores têm de somar 1,0."
+    when: {path: axes.payer, op: exists}
+    then: {path: "axes.payer[*].share", op: sum_eq, value: 1.0}
+
+  - id: RX001
+    severity: error
+    message: "Com teto e vinculação ativa, a renda não pode ser revista a mercado (RX-MKT)."
+    when:
+      all:
+        - {path: axes.economics, op: contains, value: E-CAP}
+        - {path: axes.lock, op: in, value: [L-TERM, L-SURF, L-PERP]}
+    then: {path: axes.revision, op: contains_none, value: [RX-MKT]}
+
+  - id: RX002
+    severity: warning
+    message: "E-COST: a revisão deve incluir RX-COST, ou justificar a alternativa."
+    when: {path: axes.economics, op: contains, value: E-COST}
+    then:
+      any:
+        - {path: axes.revision, op: contains, value: RX-COST}
+        - {path: parameters.revision_rationale, op: has_value}
+
+  - id: RX003
+    severity: error
+    message: "RX-STEP, RX-CPI ou RX-CAPCPI exigem índice ou taxa e periodicidade."
+    when: {path: axes.revision, op: contains_any, value: [RX-STEP, RX-CPI, RX-CAPCPI]}
+    then:
+      all:
+        - {path: parameters.revision.index_or_rate, op: has_value}
+        - {path: parameters.revision.period, op: has_value}
+
+  - id: RX004
+    severity: error
+    message: "RX-CAPCPI exige o teto da atualização."
+    when: {path: axes.revision, op: contains, value: RX-CAPCPI}
+    then: {path: parameters.revision.cap, op: has_value}
+
+  - id: PO001
+    severity: warning
+    message: "População restrita: declarar a base legal e o critério de verificação (não discriminação)."
+    when: {path: axes.population, op: contains_any, value: [PO-SEN, PO-YOUNG, PO-STU, PO-FAM, PO-DIS, PO-WORK, PO-VULN, PO-AFF]}
+    then: {path: parameters.population_legal_basis, op: has_value}
+
+  - id: PO002
+    severity: info
+    message: "Seniores sem cuidado previsto: declarar o percurso se o residente passar a precisar de cuidados."
+    when:
+      all:
+        - {path: axes.population, op: contains, value: PO-SEN}
+        - {path: overlays, op: contains_none, value: [O-CARE]}
+    then: {path: parameters.care_pathway, op: has_value}
+
+  - id: CO001
+    severity: error
+    message: "O-COHOUS exige governação G-1P1V ou G-MULTI e ROLE-COMM entre quem atribui as casas."
+    when: {path: overlays, op: contains, value: O-COHOUS}
+    then:
+      all:
+        - {path: axes.governance, op: contains_any, value: [G-1P1V, G-MULTI]}
+        - {path: operation.allocator, op: contains, value: ROLE-COMM}
+
+  - id: US001
+    severity: error
+    message: "T-LIFE exige R-REAL-LIM:USUF ou :DUH e a fase PH-END com o óbito como evento."
+    when: {path: axes.term, op: eq, value: T-LIFE}
+    then:
+      all:
+        - {path: axes.resident_right, op: in, value: ["R-REAL-LIM:USUF", "R-REAL-LIM:DUH"]}
+        - {path: "phases[id=PH-END].event", op: eq, value: death}
+
+  - id: US002
+    severity: warning
+    message: "E-ENTRY: declarar o método de cálculo da entrada e as regras de reembolso em caso de saída antecipada."
+    when: {path: axes.economics, op: contains, value: E-ENTRY}
+    then:
+      all:
+        - {path: parameters.entry_method, op: has_value}
+        - {path: parameters.refund_rules, op: has_value}
+
+  - id: CAT001
+    severity: info
+    message: "Headline fora dos 18 perfis: combinação válida sem cartão próprio; propor perfil se for replicável."
+    when: {path: headline, op: not_in, value: {ref: catalog.v1_3.headlines}}
+
+catalog:
+  v1_3:
+    headlines: [H-OWN-MKT-PERM, H-OWN-COST-PERM, H-COHO-COST-PERM, H-OWN-CAP-PERM, H-HYB-CAP-LONG,
+                H-LEASE-MKT-MID, H-LEASE-MKT-LONG, H-LIC-MKT-SHORT,
+                H-LEASE-CAP-LONG, H-LEASE-COST-LONG, H-LEASE-INCOME-LONG, H-TEMP-SUB-SHORT,
+                H-MEMB-COST-LONG, H-MEMB-INCOME-LONG, H-MEMB-COST-MID,
+                H-REAL-CAP-LONG, H-REAL-ENTRY-LIFE, H-TRUST-COST-LONG]

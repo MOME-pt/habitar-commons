@@ -1,0 +1,154 @@
+# Caso de representação: o campo expect lista as regras (erro ou aviso) que devem disparar.
+spec: mome.habitar.commons
+spec_version: 2.0-rc1
+spec_license: CC-BY-SA-4.0
+kind: project
+status: test
+id: REP-12
+version: 2.0-rc1
+jurisdiction:
+- PT
+headline: H-REAL-RELEASE-LIFE-0
+occupancy_title: OT-RIGHT
+axes:
+  asset_owner:
+    nature: A-CORP
+    regime: AR-FULL
+    purpose: PU-COM
+  land_owner:
+    nature: A-CORP
+    regime: AR-FULL
+    purpose: PU-COM
+  reversion: RV-0
+  resident_right: R-REAL-LIM:USUF
+  right_condition: []
+  term:
+    type: life
+    category: T-LIFE
+  transfer:
+    code: TR-0
+  economics:
+    base: E-RELEASE
+  value_capture:
+    resident: V-FREE
+    entity: V-FREE
+  finance:
+  - F-OPFIN
+  governance:
+  - G-IND
+  safeguards:
+  - S-PROT-VULN
+  targeting: Q-OPEN
+  population:
+  - PO-SEN
+  lock:
+    code: L-0
+  revision: []
+flows:
+- id: preco_nua_propriedade
+  type: FL-CAP
+  payer:
+  - code: PY-INS
+    share: 1.0
+pricing:
+  energy:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  water:
+    inclusion: IN-RES
+    form: PF-USE
+    contract_holder: resident
+  telecom:
+    inclusion: IN-RES
+    form: PF-FIX
+    contract_holder: resident
+functions:
+  sleep:
+    where: unit
+  hygiene:
+    where: unit
+  cook:
+    where: unit
+  living:
+    where: unit
+  laundry:
+    where: unit
+unit:
+  area_m2: 70
+  households: 1
+common_spaces: []
+building:
+  unit_constitution: fracao_autonoma
+  authorized_use: habitacao
+  typology: T2
+  accessibility:
+    regime: DL 163/2006
+    status: cumpre
+  energy_certificate: A
+overlays:
+  spatial:
+  - O-UNIT
+  relational: []
+  programmatic: []
+services: []
+modules:
+  use:
+  - U-UP
+  - U-SUB-T
+  mobility:
+  - M-MI
+  improvements:
+  - I-COMP-LIM
+  intermediation:
+  - N-0
+institutional:
+  participation_duty: estatutaria
+  resident_bodies:
+  - assembleia_geral
+  - direcao
+  - conselho_fiscal
+  admission:
+    allocator: ROLE-COOP
+    legal_basis: DL 502/99, arts. 8.º e 9.º
+phases:
+- id: PH-DEV
+  transition_event: escritura de venda da nua propriedade
+- id: PH-OP
+- id: PH-END
+  transition_event: obito
+operation:
+  public:
+    owner_vehicle: x
+    developer_return: RT-MARGIN
+    developer_exit: X-ASSET
+    holding_period: 5 anos
+    leverage: 60%
+    collateral_use: nenhum
+    developer:
+    - D-CORP
+    allocator: []
+  private:
+    works_owner: ROLE-OWN
+    vacancy_risk: ROLE-OWN
+parameters:
+  jurisdiction:
+    PT:
+      regimes: []
+  population_legal_basis: idade mínima de 65 anos no contrato
+  care_pathway: 'não aplicável: o residente fica na sua casa'
+evaluation:
+  poe:
+    level: indicativo
+    evaluator: ROLE-EVAL
+    last_date: '2026-10-01'
+    output: relatorio_de_divergencias
+  data_rules:
+    consent: required
+    publication: aggregated
+    individual_data_in_manifest: false
+seal:
+  commons: false
+  candidate: true
+history: []
+expect: []
